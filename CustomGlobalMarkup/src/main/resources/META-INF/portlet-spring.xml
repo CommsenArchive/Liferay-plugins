@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default-init-method="afterPropertiesSet" xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+	<bean id="com.commsen.liferay.portlet.customglobalmarkup.service.MarkupLocalService.impl" class="com.commsen.liferay.portlet.customglobalmarkup.service.impl.MarkupLocalServiceImpl" />
+	<bean id="com.commsen.liferay.portlet.customglobalmarkup.service.MarkupLocalService.velocity" class="org.springframework.aop.framework.ProxyFactoryBean" parent="baseVelocityService">
+		<property name="target" ref="com.commsen.liferay.portlet.customglobalmarkup.service.MarkupLocalService.impl" />
+	</bean>
+	<bean id="com.commsen.liferay.portlet.customglobalmarkup.service.MarkupLocalServiceUtil" class="com.commsen.liferay.portlet.customglobalmarkup.service.MarkupLocalServiceUtil">
+		<property name="service" ref="com.commsen.liferay.portlet.customglobalmarkup.service.MarkupLocalService.impl" />
+	</bean>
+	<bean id="com.commsen.liferay.portlet.customglobalmarkup.service.persistence.MarkupPersistence.impl" class="com.commsen.liferay.portlet.customglobalmarkup.service.persistence.MarkupPersistenceImpl" parent="basePersistence" />
+	<bean id="com.commsen.liferay.portlet.customglobalmarkup.service.persistence.MarkupUtil" class="com.commsen.liferay.portlet.customglobalmarkup.service.persistence.MarkupUtil">
+		<property name="persistence" ref="com.commsen.liferay.portlet.customglobalmarkup.service.persistence.MarkupPersistence.impl" />
+	</bean>
+</beans>
