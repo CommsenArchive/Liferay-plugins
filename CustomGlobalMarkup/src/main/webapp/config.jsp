@@ -39,7 +39,7 @@
 
 <%
 PortletURL portletURL = renderResponse.createRenderURL();
-List<Markup> markups = MarkupLocalServiceUtil.getMarkups(PortalUtil.getScopeGroupId(renderRequest));
+List<Markup> markups = (List<Markup>)renderRequest.getAttribute("markups");
 %>
 
 <liferay-portlet:renderURL var="renderURL"/>
@@ -80,11 +80,16 @@ List<Markup> markups = MarkupLocalServiceUtil.getMarkups(PortalUtil.getScopeGrou
 		keyProperty="id"
 		modelVar="markup"
 	>
-		
+		<%
+		String saveOkKey = "custom-global-markup-save-ok-" + markup.getId();
+		String tooLongKey = "custom-global-markup-error-too-long-" + markup.getId();
+		%>
 		<%-- 
 			First column contains text area  
 		--%>
 		<liferay-ui:search-container-column-text>
+			<liferay-ui:success key="<%=saveOkKey %>" message="save-ok" />	
+			<liferay-ui:error key="<%=tooLongKey %>" message="markup-too-long" />
 			<liferay-ui:input-textarea 
 				param="<%=\"markup_\" + markup.getId() %>" 
 				defaultValue="<%=HtmlUtil.escape(markup.getMarkup())%>"/>
