@@ -56,14 +56,13 @@ List<Markup> markups = MarkupLocalServiceUtil.getMarkups(PortalUtil.getScopeGrou
 
 
 <liferay-ui:search-container
-	emptyResultsMessage="noMarkupMessage" 
+	emptyResultsMessage="no-custom-markups" 
 	curParam="cur1"
-	headerNames=",action"
 	iteratorURL="<%= portletURL %>"
 	>
 	
-	<input type="button" name="addMarkup" value="Add markup" onClick="self.location = '<%=addURL %>';">
-	<input type="submit" name="save" value="Save changes" >
+	<input type="button" name="addMarkup" value="<liferay-ui:message key="add-markup" />" onClick="self.location = '<%=addURL %>';">
+	<input type="submit" name="save" value="<liferay-ui:message key="save-changes" />" >
 	
 	<%-- 
 		Define result list and count 
@@ -99,7 +98,7 @@ List<Markup> markups = MarkupLocalServiceUtil.getMarkups(PortalUtil.getScopeGrou
 
 			<div>
 				<% String locationFieldName = "location_" + markup.getId(); %>
-				<label for="<portlet:namespace /><%=locationFieldName %>">Location </label>
+				<label for="<portlet:namespace /><%=locationFieldName %>"><liferay-ui:message key="location" /></label>
 				<select name="<portlet:namespace /><%=locationFieldName %>" >
 					<option value="1" <%=markup.getLocation() == 1 ? "selected='selected'" : "" %> >TOP</option>
 					<option value="2" <%=markup.getLocation() == 2 ? "selected='selected'" : "" %> >BOTTOM</option>
@@ -107,7 +106,7 @@ List<Markup> markups = MarkupLocalServiceUtil.getMarkups(PortalUtil.getScopeGrou
 			</div>
 			<div>
 				<% String activeFieldName = "active_" + markup.getId(); %>
-				<label for="<portlet:namespace /><%=activeFieldName %>">Active </label>
+				<label for="<portlet:namespace /><%=activeFieldName %>"><liferay-ui:message key="active" /></label>
 				<liferay-ui:input-select  
 					param="<%=activeFieldName %>" 
 					defaultValue="<%=markup.isActive() %>" 
@@ -115,7 +114,7 @@ List<Markup> markups = MarkupLocalServiceUtil.getMarkups(PortalUtil.getScopeGrou
 			</div>
 			<div>
 				<% String deleteFieldName = "delete_" + markup.getId(); %>
-				<label for="<portlet:namespace /><%=deleteFieldName %>Checkbox">Delete on save</label>
+				<label for="<portlet:namespace /><%=deleteFieldName %>Checkbox"><liferay-ui:message key="delete-on-save" /></label>
 				<liferay-ui:input-checkbox  
 					param="<%=deleteFieldName %>" 
 					/>
