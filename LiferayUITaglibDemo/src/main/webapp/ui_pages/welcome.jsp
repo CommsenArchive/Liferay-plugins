@@ -38,7 +38,7 @@
 <%@page import="java.util.ArrayList"%>
 
 <p>
-WELCOME PAGE 
+The portlet demonstrates how tol use some of liferay-ui tags.  
 </p>
 
 
@@ -68,6 +68,71 @@ WELCOME PAGE
 		/>
 	</td>
   </tr>
-</table>
+  
+  <tr>
+    <td>
+    	<code><pre>
+&lt;liferay-ui:language displayStyle="0" /&gt;&lt;br/&gt;&lt;br/&gt;
+&lt;liferay-ui:language displayStyle="1" languageIds='&lt;%= new String[]{"en_US","en_GB","en_AU"} %&gt;'/&gt;&lt;br/&gt;&lt;br/&gt;
+&lt;liferay-ui:language displayStyle="2" languageIds='&lt;%= new String[]{"bg","en","es","pl"} %&gt;'/&gt;&lt;br/&gt;&lt;br/&gt;
+&lt;liferay-ui:language displayStyle="3"/&gt;&lt;br/&gt;&lt;br/&gt;
+		</pre></code>
+	</td>
+    <td>
+		<liferay-ui:language displayStyle="0" /><br/><br/>
+		<liferay-ui:language displayStyle="1" languageIds='<%= new String[]{"en_US","en_GB","en_AU"} %>'/><br/><br/>
+		<liferay-ui:language displayStyle="2" languageIds='<%= new String[]{"bg","en","es","pl"} %>'/><br/><br/>
+		<liferay-ui:language displayStyle="3"/><br/><br/>
+	</td>
+  </tr>
+
+  <tr>
+    <td>
+    	<code><pre>
+&lt;liferay-ui:toggle id="toggle_div" showMessage="Show yellow box" hideMessage="Hide yellow box" /&gt;
+&lt;div id="toggle_div" style="background-color: yellow; float: right; width: 200px" &gt;
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer facilisis faucibus lectus, 
+		a imperdiet lectus ornare ac. Etiam vehicula mauris in quam volutpat sed fermentum enim mollis. 
+		Donec sit amet felis erat, sed egestas nisi.
+&lt;/div&gt;
+&lt;hr/&gt;
+&lt;liferay-ui:toggle-area id="toggle_area"&gt;
+	&lt;div class="toggle_area"&gt;
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer facilisis faucibus lectus, 
+		a imperdiet lectus ornare ac. Etiam vehicula mauris in quam volutpat sed fermentum enim mollis. 
+		Donec sit amet felis erat, sed egestas nisi. Sed ante sapien, ornare in pulvinar nec, fermentum 
+		in ipsum. Etiam scelerisque nibh a nibh condimentum interdum fringilla tortor condimentum. 
+		Quisque leo ligula, scelerisque sed dapibus eu, volutpat eget velit. Donec quis mi turpis. Morbi 
+		consequat vulputate nulla, ut ullamcorper augue varius eget. Quisque pharetra interdum quam sed 
+		dictum. Integer malesuada nisl at augue sollicitudin vel hendrerit leo rhoncus. Fusce elementum 
+		urna ut orci accumsan ut mollis nunc rhoncus. Pellentesque nisl odio, pulvinar non congue nec, 
+		hendrerit ut sapien.
+	&lt;/div&gt;
+&lt;/liferay-ui:toggle-area&gt;
+		</pre></code>
+	</td>
+    <td>
+		<liferay-ui:toggle id="toggle_div" showMessage="Show yellow box" hideMessage="Hide yellow box" />
+		<div id="toggle_div" style="background-color: yellow; float: right; width: 200px" >
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer facilisis faucibus lectus, 
+				a imperdiet lectus ornare ac. Etiam vehicula mauris in quam volutpat sed fermentum enim mollis. 
+				Donec sit amet felis erat, sed egestas nisi.
+		</div>
+		<hr/>
+		<liferay-ui:toggle-area id="toggle_area">
+			<div class="toggle_area">
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer facilisis faucibus lectus, 
+				a imperdiet lectus ornare ac. Etiam vehicula mauris in quam volutpat sed fermentum enim mollis. 
+				Donec sit amet felis erat, sed egestas nisi. Sed ante sapien, ornare in pulvinar nec, fermentum 
+				in ipsum. Etiam scelerisque nibh a nibh condimentum interdum fringilla tortor condimentum. 
+				Quisque leo ligula, scelerisque sed dapibus eu, volutpat eget velit. Donec quis mi turpis. Morbi 
+				consequat vulputate nulla, ut ullamcorper augue varius eget. Quisque pharetra interdum quam sed 
+				dictum. Integer malesuada nisl at augue sollicitudin vel hendrerit leo rhoncus. Fusce elementum 
+				urna ut orci accumsan ut mollis nunc rhoncus. Pellentesque nisl odio, pulvinar non congue nec, 
+				hendrerit ut sapien.
+			</div>
+		</liferay-ui:toggle-area>
+	</td>
+  </tr>   </table>
 
 
