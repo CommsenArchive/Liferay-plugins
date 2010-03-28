@@ -6,7 +6,7 @@
 	<groupId>com.commsen.example.liferay.taglib.ui</groupId>
 	<artifactId>liferay-ui-taglib-demo-portlet</artifactId>
 	<packaging>war</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>5.2.3.1.0</version>
 	<name>Liferay UI Taglib Demo</name>
 	<url>http://commsen.com</url>
 	<dependencies>
