@@ -27,18 +27,21 @@
 <%@page import="com.liferay.portal.service.ThemeServiceUtil"%>
 <%@page import="com.liferay.portal.service.ThemeLocalServiceUtil"%>
 <%@page import="com.liferay.portal.kernel.util.WebKeys"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="com.liferay.portal.kernel.util.KeyValuePair"%>
+<%@page import="com.liferay.portlet.journal.model.JournalArticle"%>
+<%@page import="com.liferay.portlet.journal.model.JournalArticleModel"%>
 
 <% 
 	ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(WebKeys.THEME_DISPLAY);
 %>
 
 
+<span class="portlet-msg-alert">
+	Note: <code>liferay-ui:input-permissions</code> requires logged in user with appropriate permissions.
+</span>
 
-<%@page import="java.util.List"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="com.liferay.portal.kernel.util.KeyValuePair"%>
-<%@page import="com.liferay.portlet.journal.model.JournalArticle"%>
-<%@page import="com.liferay.portlet.journal.model.JournalArticleModel"%>
 
 
 

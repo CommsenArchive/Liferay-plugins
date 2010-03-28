@@ -32,14 +32,9 @@
 	ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(WebKeys.THEME_DISPLAY);
 %>
 
-
-
-<%@page import="java.util.List"%>
-<%@page import="java.util.ArrayList"%>
-
-<p>
-The portlet demonstrates how tol use some of liferay-ui tags.  
-</p>
+<h3>
+This portlet demonstrates how to use some of the tags from liferay-ui tag library. 
+</h3>
 
 
 
@@ -56,46 +51,59 @@ The portlet demonstrates how tol use some of liferay-ui tags.
     <td>
     	<code><pre>
 &lt;liferay-ui:user-display  
-	displayStyle="2" 
+	displayStyle="0" 
 	userId="&lt;%= themeDisplay.getUser().getUserId() %&gt;" 
-		/&gt;
+	/&gt;
+&lt;hr/&gt;  
+&lt;liferay-ui:user-display  
+	displayStyle="1" 
+	userId="&lt;%= themeDisplay.getUser().getUserId() %&gt;" 
+	/&gt;
 		</pre></code>
 	</td>
     <td>
 	<liferay-ui:user-display  
-		displayStyle="2" 
+		displayStyle="0" 
 		userId="<%= themeDisplay.getUser().getUserId() %>" 
 		/>
-	</td>
+	<hr/>
+	<liferay-ui:user-display  
+		displayStyle="1" 
+		userId="<%= themeDisplay.getUser().getUserId() %>" 
+		/>
   </tr>
   
   <tr>
     <td>
     	<code><pre>
-&lt;liferay-ui:language displayStyle="0" /&gt;&lt;br/&gt;&lt;br/&gt;
-&lt;liferay-ui:language displayStyle="1" languageIds='&lt;%= new String[]{"en_US","en_GB","en_AU"} %&gt;'/&gt;&lt;br/&gt;&lt;br/&gt;
-&lt;liferay-ui:language displayStyle="2" languageIds='&lt;%= new String[]{"bg","en","es","pl"} %&gt;'/&gt;&lt;br/&gt;&lt;br/&gt;
-&lt;liferay-ui:language displayStyle="3"/&gt;&lt;br/&gt;&lt;br/&gt;
+&lt;liferay-ui:language displayStyle="0" /&gt;
+&lt;hr/&gt;  
+&lt;liferay-ui:language displayStyle="1" languageIds='&lt;%= new String[]{"en_US","en_GB","en_AU"} %&gt;'/&gt;
+&lt;hr/&gt;  
+&lt;liferay-ui:language displayStyle="2" languageIds='&lt;%= new String[]{"bg","en","es","pl"} %&gt;'/&gt;
+&lt;hr/&gt;  
+&lt;liferay-ui:language displayStyle="3"/&gt;
 		</pre></code>
 	</td>
     <td>
-		<liferay-ui:language displayStyle="0" /><br/><br/>
-		<liferay-ui:language displayStyle="1" languageIds='<%= new String[]{"en_US","en_GB","en_AU"} %>'/><br/><br/>
-		<liferay-ui:language displayStyle="2" languageIds='<%= new String[]{"bg","en","es","pl"} %>'/><br/><br/>
-		<liferay-ui:language displayStyle="3"/><br/><br/>
+		<liferay-ui:language displayStyle="0" />
+		<hr/>
+		<liferay-ui:language displayStyle="1" languageIds='<%= new String[]{"en_US","en_GB","en_AU"} %>'/>
+		<hr/>
+		<liferay-ui:language displayStyle="2" languageIds='<%= new String[]{"bg","en","es","pl"} %>'/>
+		<hr/>
+		<liferay-ui:language displayStyle="3"/>
 	</td>
   </tr>
 
   <tr>
     <td>
     	<code><pre>
-&lt;liferay-ui:toggle id="toggle_div" showMessage="Show yellow box" hideMessage="Hide yellow box" /&gt;
 &lt;div id="toggle_div" style="background-color: yellow; float: right; width: 200px" &gt;
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer facilisis faucibus lectus, 
 		a imperdiet lectus ornare ac. Etiam vehicula mauris in quam volutpat sed fermentum enim mollis. 
 		Donec sit amet felis erat, sed egestas nisi.
 &lt;/div&gt;
-&lt;hr/&gt;
 &lt;liferay-ui:toggle-area id="toggle_area"&gt;
 	&lt;div class="toggle_area"&gt;
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer facilisis faucibus lectus, 
@@ -109,16 +117,16 @@ The portlet demonstrates how tol use some of liferay-ui tags.
 		hendrerit ut sapien.
 	&lt;/div&gt;
 &lt;/liferay-ui:toggle-area&gt;
+&lt;hr/&gt;
+&lt;liferay-ui:toggle id="toggle_div" showMessage="Show yellow box" hideMessage="Hide yellow box" /&gt;
 		</pre></code>
 	</td>
     <td>
-		<liferay-ui:toggle id="toggle_div" showMessage="Show yellow box" hideMessage="Hide yellow box" />
-		<div id="toggle_div" style="background-color: yellow; float: right; width: 200px" >
+		<div id="toggle_div" style="background-color: yellow; float: right; width: 200px;" >
 				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer facilisis faucibus lectus, 
 				a imperdiet lectus ornare ac. Etiam vehicula mauris in quam volutpat sed fermentum enim mollis. 
 				Donec sit amet felis erat, sed egestas nisi.
 		</div>
-		<hr/>
 		<liferay-ui:toggle-area id="toggle_area">
 			<div class="toggle_area">
 				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer facilisis faucibus lectus, 
@@ -132,7 +140,10 @@ The portlet demonstrates how tol use some of liferay-ui tags.
 				hendrerit ut sapien.
 			</div>
 		</liferay-ui:toggle-area>
+		<hr/>
+		<liferay-ui:toggle id="toggle_div" showMessage="Show yellow box" hideMessage="Hide yellow box" />
 	</td>
-  </tr>   </table>
+  </tr>   
+</table>
 
 

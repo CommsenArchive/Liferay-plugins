@@ -22,6 +22,11 @@
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
 
+<span class="portlet-msg-alert">
+	Note: <code>liferay-ui:panel</code> will not roll-in and roll-out for not logged in users.
+	 The reason is that required JavaScript file is not in "javascript.barebone.files" 
+</span>
+
 <table width="100%" border="1">
 	<col width="50%">
 	<col width="50%">
