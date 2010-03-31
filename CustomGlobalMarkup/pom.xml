@@ -6,7 +6,7 @@
 	<groupId>com.commsen.liferay.portlet.customglobalmarkup</groupId>
 	<artifactId>custom-global-markup-portlet</artifactId>
 	<packaging>war</packaging>
-	<version>5.2.3.1.2-SNAPSHOT</version>
+	<version>5.2.3.1.2</version>
 	<name>Custom Global Markup</name>
 	<url>http://www.commsen.com</url>
 	<dependencies>
