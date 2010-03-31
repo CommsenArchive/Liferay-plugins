@@ -44,7 +44,8 @@ public class CustomGlobalMarkupPortlet extends GenericPortlet {
 		List<Markup> topMarkups = MarkupLocalServiceUtil.getActiveTopMarkups(PortalUtil.getScopeGroupId(renderRequest));
 
 		if (!topMarkups.isEmpty()) {
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = (StringBuilder) renderRequest.getAttribute(WebKeys.PAGE_TOP);
+			if (sb == null) sb = new StringBuilder();
 			for (Markup markup : topMarkups) {
 				sb.append(markup.getMarkup()).append("\n");
 			}
@@ -55,7 +56,8 @@ public class CustomGlobalMarkupPortlet extends GenericPortlet {
 		List<Markup> bottomMarkups = MarkupLocalServiceUtil.getActiveBottomMarkups(PortalUtil.getScopeGroupId(renderRequest));
 
 		if (!bottomMarkups.isEmpty()) {
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = (StringBuilder) renderRequest.getAttribute(WebKeys.PAGE_BOTTOM);
+			if (sb == null) sb = new StringBuilder();
 			for (Markup markup : bottomMarkups) {
 				sb.append(markup.getMarkup()).append("\n");
 			}
