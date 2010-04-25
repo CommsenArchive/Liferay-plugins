@@ -1,0 +1,16 @@
+ul.tailgate {
+	margin: 0px;
+	background-color: #220000; 
+	border: 2px solid silver;
+	padding: 2px;
+}
+
+ul.tailgateRunnig {
+	background-color: #002200; 
+}
+
+ul.tailgate > li {
+	list-style-type: none;
+	font-family: monospace;
+	color: white;
+}

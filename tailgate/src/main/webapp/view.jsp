@@ -17,41 +17,33 @@
  */
 %>
 
-<%@include file="../init.jsp" %>
+<%@include file="init.jsp" %>
 
 <div>
-Showing the last <%=prefs.getValue("lines","100")%> lines of file <%=prefs.getValue("fileName","")%>
+<button id="<portlet:namespace />_start">Start</button>
+<button id="<portlet:namespace />_stop">Stop</button>
+listing file <strong><%=prefs.getValue("fileName","")%></strong>. <small>(Showing only last <%=prefs.getValue("lines","100")%> lines)</small>
 </div>
 
-	<input id="<portlet:namespace />addButton" type="button" value="add" > 
-	<ul id="<portlet:namespace />list"> 
-		<li>line 1</li> 
+	<ul id="<portlet:namespace />list" class="tailgate"> 
+		<%=request.getAttribute("lines") %>
 	</ul> 
-	
-	<div id="responsecontainer"> 
-	</div> 
+	 
 
- 
-
-	<script type="text/javascript"> 
-		var counter = 0;
-		jQuery('#<portlet:namespace />list').append('<li>Test</li>')
-	
-		jQuery('#<portlet:namespace />addButton').click(function() {
-			// append new elements 				
-			jQuery('#<portlet:namespace />list').append('<li>Test_' + counter + '</li>');
-			counter++;
-			jQuery('#<portlet:namespace />list').append('<li>Test_' + counter + '</li>');
-			counter++;
-			jQuery('#<portlet:namespace />list').append('<li>Test_' + counter + '</li>');
-			counter++;
-
-			// delete first if too long 				
-			var maxLines = <%=prefs.getValue("lines","100")%>;
-			var lines = jQuery('#<portlet:namespace />list li').length;
-			if (lines > maxLines) {
-				jQuery('#<portlet:namespace />list li').slice(0, lines- maxLines).remove();
-			}
-			
+	<script type="text/javascript">
+		<!-- 
+		jQuery("#<portlet:namespace />_stop").hide();
+		tailgateInstances["<portlet:namespace />"] = new Tailgate(<%=prefs.getValue("lines","100")%>, "<liferay-portlet:resourceURL />"); 
+		jQuery("#<portlet:namespace />_start").click(function(){
+			startReading("<portlet:namespace />");
+			jQuery("#<portlet:namespace />_start").hide();
+			jQuery("#<portlet:namespace />_stop").show();
 		})
+		jQuery("#<portlet:namespace />_stop").click(function(){
+			stopReading("<portlet:namespace />");
+			jQuery("#<portlet:namespace />_start").show();
+			jQuery("#<portlet:namespace />_stop").hide();
+		})
+
+		-->
 	</script> 

@@ -22,17 +22,24 @@
 
 package com.commsen.liferay.portlet.tailgate;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.GenericPortlet;
 import javax.portlet.PortletException;
 import javax.portlet.PortletPreferences;
+import javax.portlet.PortletRequest;
 import javax.portlet.PortletRequestDispatcher;
 import javax.portlet.ProcessAction;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
 
 import com.liferay.portal.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -47,6 +54,11 @@ import com.liferay.portal.kernel.util.ParamUtil;
  * 
  */
 public class TailgatePortlet extends GenericPortlet {
+
+	private static final String SESSION_KEY_FILE_TAIL = FileTail.class.getName();
+	private static final String SESSION_KEY_LAST_LINES = "com.commsen.liferay.portlet.tailgate.LINES";
+	private static final int DEFAULT_NUMBER_OF_LINES = 100;
+
 
 	public void init() throws PortletException {
 		editJSP = getInitParameter("edit-jsp");
@@ -77,9 +89,16 @@ public class TailgatePortlet extends GenericPortlet {
 	}
 
 
-	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
-
-		include(viewJSP, renderRequest, renderResponse);
+	public void doView(RenderRequest request, RenderResponse response) throws IOException, PortletException {
+		Queue<String> lastLines = (Queue) request.getPortletSession().getAttribute(SESSION_KEY_LAST_LINES);
+		StringBuilder sb = new StringBuilder();
+		if (lastLines != null) {
+			for (String line : lastLines) {
+				sb.append("<li>").append(line).append("</li>");
+			}
+		}
+		request.setAttribute("lines", sb.toString());
+		include(viewJSP, request, response);
 	}
 
 
@@ -96,6 +115,47 @@ public class TailgatePortlet extends GenericPortlet {
 
 		SessionMessages.add(request, "tailgate-message:config-saved");
 
+		FileTail fileTail = (FileTail) request.getPortletSession().getAttribute(SESSION_KEY_FILE_TAIL);
+		if (fileTail != null) {
+			if (fileTail.getFileName().equals(new File(filename).getCanonicalPath())) {
+				return;
+			}
+		}
+
+		initFileTail(request);
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 * @see javax.portlet.GenericPortlet#serveResource(javax.portlet.ResourceRequest,
+	 * javax.portlet.ResourceResponse)
+	 */
+	@Override
+	public void serveResource(ResourceRequest request, ResourceResponse response) throws PortletException, IOException {
+		FileTail fileTail = (FileTail) request.getPortletSession().getAttribute(SESSION_KEY_FILE_TAIL);
+		if (fileTail == null) {
+			if (initFileTail(request)) {
+				fileTail = (FileTail) request.getPortletSession().getAttribute(SESSION_KEY_FILE_TAIL);
+			}
+		}
+
+		Queue<String> lastLines = (Queue) request.getPortletSession().getAttribute(SESSION_KEY_LAST_LINES);
+		if (lastLines == null) {
+			lastLines = new LinkedList<String>();
+			request.getPortletSession().setAttribute(SESSION_KEY_LAST_LINES, lastLines);
+		}
+
+		if (fileTail != null) {
+			if (!fileTail.isRunnig()) fileTail.start();
+			String line;
+			PrintWriter writer = response.getWriter();
+			while ((line = fileTail.readLine()) != null) {
+				lastLines.add(line);
+				if (lastLines.size() > fileTail.getLines()) lastLines.remove();
+				writer.println("<li>" + line + "</li>");
+			}
+		}
 	}
 
 
@@ -108,6 +168,27 @@ public class TailgatePortlet extends GenericPortlet {
 		} else {
 			portletRequestDispatcher.include(renderRequest, renderResponse);
 		}
+	}
+
+
+	private boolean initFileTail(PortletRequest request) throws IOException {
+		PortletPreferences prefs = request.getPreferences();
+		String fileName = prefs.getValue("fileName", null);
+
+		if (fileName == null) {
+			return false;
+		}
+
+		int lines = DEFAULT_NUMBER_OF_LINES;
+		try {
+			lines = Integer.parseInt(prefs.getValue("lines", "" + DEFAULT_NUMBER_OF_LINES));
+		} catch (NumberFormatException e) {
+			return false;
+		}
+
+		FileTail fileTail = new FileTail(new File(fileName), lines);
+		request.getPortletSession().setAttribute(SESSION_KEY_FILE_TAIL, fileTail);
+		return true;
 	}
 
 	protected String editJSP;
