@@ -14,18 +14,20 @@ import java.util.WeakHashMap;
  */
 public class FileMonitoringEngine {
 
-	private static final Map<FileTail, FileMonitor> listeners = new WeakHashMap<FileTail, FileMonitor>();
+	private static final Map<FileTail, FileMonitor> LISTENERS = new WeakHashMap<FileTail, FileMonitor>();
 
 
 	/**
 	 * @throws IOException
 	 * 
 	 */
-	public static void register(FileTail fileTail) throws IOException {
-		if (listeners.containsKey(fileTail)) return;
+	public static void register(final FileTail fileTail) throws IOException {
+		if (LISTENERS.containsKey(fileTail)) {
+			return;
+		}
 
 		FileMonitor fileMonitor = null;
-		for (FileMonitor fm : listeners.values()) {
+		for (FileMonitor fm : LISTENERS.values()) {
 			if (fm != null && fm.getFileName().equals(fileTail.getFileName())) {
 				fileMonitor = fm;
 				continue;
@@ -34,27 +36,27 @@ public class FileMonitoringEngine {
 
 		if (fileMonitor == null) {
 			fileMonitor = new FileMonitor(new File(fileTail.getFileName()));
-			Thread t = new Thread(fileMonitor, "FileMonitor(" + fileMonitor.getFileName() + ")");
-			t.start();
+			final Thread monitorThread = new Thread(fileMonitor, "FileMonitor(" + fileMonitor.getFileName() + ")");
+			monitorThread.start();
 		}
 
 		fileMonitor.addListener(fileTail);
-		listeners.put(fileTail, fileMonitor);
+		LISTENERS.put(fileTail, fileMonitor);
 
 	}
 
 
-	public static void unregister(FileTail fileTail) {
-		if (listeners.containsKey(fileTail)) {
-			FileMonitor fileMonitor = listeners.get(fileTail);
+	public static void unregister(final FileTail fileTail) {
+		if (LISTENERS.containsKey(fileTail)) {
+			final FileMonitor fileMonitor = LISTENERS.get(fileTail);
 			fileMonitor.removeListener(fileTail);
-			listeners.remove(fileTail);
+			LISTENERS.remove(fileTail);
 		}
 	}
 
 
-	public static boolean isRegistered(FileTail fileTail) {
-		return listeners.containsKey(fileTail);
+	public static boolean isRegistered(final FileTail fileTail) {
+		return LISTENERS.containsKey(fileTail);
 	}
 
 }

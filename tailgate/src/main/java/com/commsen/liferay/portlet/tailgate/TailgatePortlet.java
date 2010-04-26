@@ -55,6 +55,14 @@ import com.liferay.portal.kernel.util.ParamUtil;
  */
 public class TailgatePortlet extends GenericPortlet {
 
+	protected String editJSP;
+	protected String helpJSP;
+	protected String viewJSP;
+
+	private static final Log _log = LogFactoryUtil.getLog(TailgatePortlet.class);
+
+	private static final String FILE_NAME = "fileName";
+	private static final String LINES = "lines";
 	private static final String SESSION_KEY_FILE_TAIL = FileTail.class.getName();
 	private static final String SESSION_KEY_LAST_LINES = "com.commsen.liferay.portlet.tailgate.LINES";
 	private static final int DEFAULT_NUMBER_OF_LINES = 100;
@@ -67,19 +75,19 @@ public class TailgatePortlet extends GenericPortlet {
 	}
 
 
-	public void doDispatch(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
+	public void doDispatch(final RenderRequest renderRequest, final RenderResponse renderResponse) throws IOException, PortletException {
 
-		String jspPage = renderRequest.getParameter("jspPage");
+		final String jspPage = renderRequest.getParameter("jspPage");
 
-		if (jspPage != null) {
-			include(jspPage, renderRequest, renderResponse);
-		} else {
+		if (jspPage == null) {
 			super.doDispatch(renderRequest, renderResponse);
+		} else {
+			include(jspPage, renderRequest, renderResponse);
 		}
 	}
 
 
-	public void doEdit(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
+	public void doEdit(final RenderRequest renderRequest, final RenderResponse renderResponse) throws IOException, PortletException {
 
 		if (renderRequest.getPreferences() == null) {
 			super.doEdit(renderRequest, renderResponse);
@@ -89,37 +97,36 @@ public class TailgatePortlet extends GenericPortlet {
 	}
 
 
-	public void doView(RenderRequest request, RenderResponse response) throws IOException, PortletException {
-		Queue<String> lastLines = (Queue) request.getPortletSession().getAttribute(SESSION_KEY_LAST_LINES);
-		StringBuilder sb = new StringBuilder();
+	public void doView(final RenderRequest request, final RenderResponse response) throws IOException, PortletException {
+		@SuppressWarnings("unchecked")
+		final Queue<String> lastLines = (Queue) request.getPortletSession().getAttribute(SESSION_KEY_LAST_LINES);
+		final StringBuilder result = new StringBuilder();
 		if (lastLines != null) {
 			for (String line : lastLines) {
-				sb.append("<li>").append(line).append("</li>");
+				result.append("<li>").append(line).append("</li>");
 			}
 		}
-		request.setAttribute("lines", sb.toString());
+		request.setAttribute(LINES, result.toString());
 		include(viewJSP, request, response);
 	}
 
 
 	@ProcessAction(name = "saveConfig")
-	public void saveConfig(ActionRequest request, ActionResponse response) throws SystemException, PortletException, IOException {
+	public void saveConfig(final ActionRequest request, final ActionResponse response) throws SystemException, PortletException, IOException {
 
-		String filename = ParamUtil.getString(request, "fileName", null);
-		int lines = ParamUtil.getInteger(request, "lines", 100);
+		final String filename = ParamUtil.getString(request, FILE_NAME, null);
+		final int lines = ParamUtil.getInteger(request, LINES, 100);
 
-		PortletPreferences prefs = request.getPreferences();
-		prefs.setValue("fileName", filename);
-		prefs.setValue("lines", "" + lines);
+		final PortletPreferences prefs = request.getPreferences();
+		prefs.setValue(FILE_NAME, filename);
+		prefs.setValue(LINES, Integer.toString(lines));
 		prefs.store();
 
 		SessionMessages.add(request, "tailgate-message:config-saved");
 
-		FileTail fileTail = (FileTail) request.getPortletSession().getAttribute(SESSION_KEY_FILE_TAIL);
-		if (fileTail != null) {
-			if (fileTail.getFileName().equals(new File(filename).getCanonicalPath())) {
-				return;
-			}
+		final FileTail fileTail = (FileTail) request.getPortletSession().getAttribute(SESSION_KEY_FILE_TAIL);
+		if (fileTail != null && fileTail.getFileName().equals(new File(filename).getCanonicalPath())) {
+			return;
 		}
 
 		initFileTail(request);
@@ -132,14 +139,12 @@ public class TailgatePortlet extends GenericPortlet {
 	 * javax.portlet.ResourceResponse)
 	 */
 	@Override
-	public void serveResource(ResourceRequest request, ResourceResponse response) throws PortletException, IOException {
+	public void serveResource(final ResourceRequest request, final ResourceResponse response) throws PortletException, IOException {
 		FileTail fileTail = (FileTail) request.getPortletSession().getAttribute(SESSION_KEY_FILE_TAIL);
-		if (fileTail == null) {
-			if (initFileTail(request)) {
-				fileTail = (FileTail) request.getPortletSession().getAttribute(SESSION_KEY_FILE_TAIL);
-			}
+		if (fileTail == null && initFileTail(request)) {
+			fileTail = (FileTail) request.getPortletSession().getAttribute(SESSION_KEY_FILE_TAIL);
 		}
-
+		@SuppressWarnings("unchecked")
 		Queue<String> lastLines = (Queue) request.getPortletSession().getAttribute(SESSION_KEY_LAST_LINES);
 		if (lastLines == null) {
 			lastLines = new LinkedList<String>();
@@ -147,21 +152,25 @@ public class TailgatePortlet extends GenericPortlet {
 		}
 
 		if (fileTail != null) {
-			if (!fileTail.isRunnig()) fileTail.start();
+			if (!fileTail.isRunnig()) {
+				fileTail.start();
+			}
 			String line;
-			PrintWriter writer = response.getWriter();
+			final PrintWriter writer = response.getWriter();
 			while ((line = fileTail.readLine()) != null) {
 				lastLines.add(line);
-				if (lastLines.size() > fileTail.getLines()) lastLines.remove();
+				if (lastLines.size() > fileTail.getLines()) {
+					lastLines.remove();
+				}
 				writer.println("<li>" + line + "</li>");
 			}
 		}
 	}
 
 
-	protected void include(String path, RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
+	protected void include(final String path, final RenderRequest renderRequest, final RenderResponse renderResponse) throws IOException, PortletException {
 
-		PortletRequestDispatcher portletRequestDispatcher = getPortletContext().getRequestDispatcher(path);
+		final PortletRequestDispatcher portletRequestDispatcher = getPortletContext().getRequestDispatcher(path);
 
 		if (portletRequestDispatcher == null) {
 			_log.error(path + " is not a valid include");
@@ -171,30 +180,24 @@ public class TailgatePortlet extends GenericPortlet {
 	}
 
 
-	private boolean initFileTail(PortletRequest request) throws IOException {
-		PortletPreferences prefs = request.getPreferences();
-		String fileName = prefs.getValue("fileName", null);
+	private boolean initFileTail(final PortletRequest request) throws IOException {
+		final PortletPreferences prefs = request.getPreferences();
+		final String fileName = prefs.getValue(FILE_NAME, null);
 
 		if (fileName == null) {
 			return false;
 		}
 
-		int lines = DEFAULT_NUMBER_OF_LINES;
+		int lines;
 		try {
-			lines = Integer.parseInt(prefs.getValue("lines", "" + DEFAULT_NUMBER_OF_LINES));
+			lines = Integer.parseInt(prefs.getValue(LINES, Integer.toString(DEFAULT_NUMBER_OF_LINES)));
 		} catch (NumberFormatException e) {
 			return false;
 		}
 
-		FileTail fileTail = new FileTail(new File(fileName), lines);
+		final FileTail fileTail = new FileTail(new File(fileName), lines);
 		request.getPortletSession().setAttribute(SESSION_KEY_FILE_TAIL, fileTail);
 		return true;
 	}
-
-	protected String editJSP;
-	protected String helpJSP;
-	protected String viewJSP;
-
-	private static Log _log = LogFactoryUtil.getLog(TailgatePortlet.class);
 
 }

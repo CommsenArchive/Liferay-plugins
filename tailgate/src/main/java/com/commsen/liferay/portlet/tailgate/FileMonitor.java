@@ -16,10 +16,23 @@ import java.util.WeakHashMap;
  */
 public class FileMonitor implements Runnable {
 
-	// private Set<WeakReference<FileTail>> listeners = Collections.synchronizedSet(new
-	// HashSet<WeakReference<FileTail>>());
-	private Set<FileTail> listeners = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<FileTail, Boolean>()));
-	private File file;
+	/**
+	 * @return the position
+	 */
+	private long getPosition() {
+		return this.position;
+	}
+
+
+	/**
+	 * @param position the position to set
+	 */
+	private void setPosition(final long position) {
+		this.position = position;
+	}
+
+	private final Set<FileTail> listeners = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<FileTail, Boolean>()));
+	private final File file;
 	private long position = 0;
 
 
@@ -27,17 +40,17 @@ public class FileMonitor implements Runnable {
 	 * @return the file
 	 * @throws IOException
 	 */
-	String getFileName() throws IOException {
+	public String getFileName() throws IOException {
 		return this.file.getCanonicalPath();
 	}
 
 
-	void addListener(FileTail fileTail) {
+	void addListener(final FileTail fileTail) {
 		listeners.add(fileTail);
 	}
 
 
-	void removeListener(FileTail fileTail) {
+	void removeListener(final FileTail fileTail) {
 		listeners.remove(fileTail);
 	}
 
@@ -45,13 +58,13 @@ public class FileMonitor implements Runnable {
 	/**
      * 
      */
-	FileMonitor(File file) {
+	FileMonitor(final File file) {
 		// TODO check if it's directory
 		this.file = file;
 	}
 
 
-	private void sleep(long ms) {
+	private void sleep(final long ms) {
 		try {
 			Thread.sleep(ms);
 		} catch (InterruptedException e) {
@@ -70,8 +83,8 @@ public class FileMonitor implements Runnable {
 
 
 	private void readAndUpdateListeners() throws IOException {
-		if (file.length() > position) {
-			RandomAccessFile raf = new RandomAccessFile(file, "r");
+		if (file.length() > getPosition()) {
+			final RandomAccessFile raf = new RandomAccessFile(file, "r");
 			raf.seek(position);
 			String line;
 			while ((line = raf.readLine()) != null) {
@@ -81,7 +94,7 @@ public class FileMonitor implements Runnable {
 					}
 				}
 			}
-			position = raf.length();
+			setPosition(raf.length());
 		}
 	}
 
@@ -105,10 +118,4 @@ public class FileMonitor implements Runnable {
 			}
 		}
 	}
-
-
-	public static FileMonitor register(FileTail fileTail) {
-		return null;
-	}
-
 }

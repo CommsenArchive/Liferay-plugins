@@ -14,12 +14,12 @@ import java.util.Queue;
  */
 public class FileTail {
 
-	private File file;
-	private int lines;
+	private final File file;
+	private final int lines;
 	private Queue<String> buffer = new LinkedList<String>();
 
 
-	public FileTail(File file, int lines) {
+	public FileTail(final File file, final int lines) {
 		this.file = file;
 		this.lines = lines;
 	}
@@ -45,8 +45,10 @@ public class FileTail {
 	/**
      * 
      */
-	public synchronized String readLine() {
-		return buffer.poll();
+	public String readLine() {
+		synchronized (buffer) {
+			return buffer.poll();
+		}
 	}
 
 
@@ -68,9 +70,14 @@ public class FileTail {
 	/**
      * 
      */
-	synchronized boolean addLine(String line) {
-		boolean result = buffer.add(line);
-		if (buffer.size() > lines) buffer.remove();
+	boolean addLine(final String line) {
+		boolean result;
+		synchronized (buffer) {
+			result = buffer.add(line);
+			if (buffer.size() > lines) {
+				buffer.remove();
+			}
+		}
 		return result;
 	}
 
