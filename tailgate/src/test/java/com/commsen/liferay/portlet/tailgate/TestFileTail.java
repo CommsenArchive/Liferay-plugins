@@ -77,7 +77,7 @@ public class TestFileTail {
 						writer.println("random number: " + Math.random());
 						writer.flush();
 						try {
-							Thread.sleep(1);
+							Thread.sleep(100);
 						} catch (InterruptedException e) {
 						}
 					}

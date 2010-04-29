@@ -45,8 +45,7 @@ public class FileMonitor implements Runnable {
 
 	private final Set<FileObserver> observers = Collections.synchronizedSet(newSetFromMap(new WeakHashMap<FileObserver, Boolean>()));
 	private final File file;
-	private long position = 0;
-	RandomAccessFile raf;
+	private RandomAccessFile raf;
 
 
 	/**
@@ -56,22 +55,6 @@ public class FileMonitor implements Runnable {
 		if (fileName == null) throw new IllegalArgumentException("Filane is null");
 		this.file = new File(fileName);
 		if (file.exists() && file.isDirectory()) throw new IllegalArgumentException("File " + file.getAbsolutePath() + " is directory!");
-	}
-
-
-	/**
-	 * @return the position
-	 */
-	private long getPosition() {
-		return this.position;
-	}
-
-
-	/**
-	 * @param position the position to set
-	 */
-	private void setPosition(final long position) {
-		this.position = position;
 	}
 
 
@@ -119,8 +102,8 @@ public class FileMonitor implements Runnable {
 
 	private void readAndUpdateListeners() {
 		try {
-			if (file.length() > getPosition()) {
-				raf.seek(position);
+			long fileLength = file.length();
+			if (fileLength > raf.getFilePointer()) {
 				String line;
 				while ((line = raf.readLine()) != null) {
 					for (FileObserver fileObserver : observers) {
@@ -129,7 +112,8 @@ public class FileMonitor implements Runnable {
 						}
 					}
 				}
-				setPosition(raf.length());
+			} else if (file.length() < raf.getFilePointer()) {
+				raf.seek(fileLength);
 			}
 		} catch (IOException e) {
 			log.log(Level.WARNING, "File not found", e);
@@ -143,17 +127,22 @@ public class FileMonitor implements Runnable {
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
-		while (!file.exists() && haveListeners()) {
+		while (!file.exists() || !haveListeners()) {
 			sleep(100);
 		}
 
 		if (file.isDirectory()) throw new IllegalArgumentException("File " + file.getAbsolutePath() + " is directory!");
 		try {
 			raf = new RandomAccessFile(file, "r");
+			raf.seek(file.length());
 		} catch (FileNotFoundException e1) {
 			log.log(Level.SEVERE, "File not found", e1);
 			return;
+		} catch (IOException e) {
+			log.log(Level.SEVERE, "Failed to move to the and of file", e);
+			return;
 		}
+
 		while (haveListeners()) {
 			readAndUpdateListeners();
 			sleep(100);
