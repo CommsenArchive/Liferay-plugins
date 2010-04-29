@@ -31,6 +31,10 @@
 			<td><label for="lines"><liferay-ui:message key="lines.to.show" />:</label></td>
 			<td><input id="lines" type="text" name="lines" maxlength="10" value="<%=prefs.getValue("lines","")%>"></td>
 		</tr>
+		<tr>
+			<td><label for="height"><liferay-ui:message key="window.height" />:</label></td>
+			<td><input id="height" type="text" name="height" maxlength="10" value="<%=prefs.getValue("height","")%>"></td>
+		</tr>
 	</table>
 	
 	<input type="submit" id="saveButton" title="<liferay-ui:message key="save" />" value="<liferay-ui:message key="save" />">

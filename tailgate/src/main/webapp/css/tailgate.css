@@ -20,6 +20,7 @@ ul.tailgate {
 	background-color: #220000; 
 	border: 2px solid silver;
 	padding: 2px;
+	overflow: auto;
 }
 
 ul.tailgateRunnig {

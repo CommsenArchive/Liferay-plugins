@@ -25,7 +25,7 @@
 listing file <strong><%=prefs.getValue("fileName","")%></strong>. <small>(Showing only last <%=prefs.getValue("lines","100")%> lines)</small>
 </div>
 
-	<ul id="<portlet:namespace />list" class="tailgate"> 
+	<ul id="<portlet:namespace />list" class="tailgate" style="height: <%=prefs.getValue("height","300px")%>"> 
 		<%=request.getAttribute("lines") %>
 	</ul> 
 	 

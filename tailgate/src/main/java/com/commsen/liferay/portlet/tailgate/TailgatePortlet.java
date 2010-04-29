@@ -58,6 +58,7 @@ public class TailgatePortlet extends GenericPortlet {
 
 	private static final String FILE_NAME = "fileName";
 	private static final String LINES = "lines";
+	private static final String WINDOW_HEIGHT = "height";
 	private static final String SESSION_KEY_FILE_BUFFER = FileBuffer.class.getName();
 	private static final String SESSION_KEY_LAST_LINES = "com.commsen.liferay.portlet.tailgate.LINES";
 	private static final int DEFAULT_NUMBER_OF_LINES = 100;
@@ -111,18 +112,15 @@ public class TailgatePortlet extends GenericPortlet {
 
 		final String filename = ParamUtil.getString(request, FILE_NAME, null);
 		final int lines = ParamUtil.getInteger(request, LINES, 100);
+		final String height = ParamUtil.getString(request, WINDOW_HEIGHT, "300px");
 
 		final PortletPreferences prefs = request.getPreferences();
 		prefs.setValue(FILE_NAME, filename);
 		prefs.setValue(LINES, Integer.toString(lines));
+		prefs.setValue(WINDOW_HEIGHT, height);
 		prefs.store();
 
 		SessionMessages.add(request, "tailgate-message:config-saved");
-
-		final FileBuffer fileBuffer = (FileBuffer) request.getPortletSession().getAttribute(SESSION_KEY_FILE_BUFFER);
-		if (fileBuffer != null && fileBuffer.getFileName().equals(new File(filename).getCanonicalPath())) {
-			return;
-		}
 
 		initFileBuffer(request);
 	}
@@ -190,7 +188,12 @@ public class TailgatePortlet extends GenericPortlet {
 			return false;
 		}
 
-		final FileBuffer fileBuffer = FileMonitoringEngine.newFileBuffer(fileName, lines);
+		FileBuffer fileBuffer = (FileBuffer) request.getPortletSession().getAttribute(SESSION_KEY_FILE_BUFFER);
+		if (fileBuffer != null && fileBuffer.getFileName().equals(new File(fileName).getCanonicalPath())) {
+			return true;
+		}
+
+		fileBuffer = FileMonitoringEngine.newFileBuffer(fileName, lines);
 		request.getPortletSession().setAttribute(SESSION_KEY_FILE_BUFFER, fileBuffer);
 		return true;
 	}
