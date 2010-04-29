@@ -4,7 +4,12 @@
 package com.commsen.liferay.portlet.tailgate;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+
+import com.commsen.file.monitor.FileBuffer;
+import com.commsen.file.monitor.FileMonitoringEngine;
 
 /**
  * @author Milen Dyankov
@@ -15,14 +20,14 @@ public class TestFileTail {
 
 
 	public static void main(String[] args) throws IOException {
-		FileTail fileTail = new FileTail(new File("/tmp/buffer"), 100);
-		fileTail.start();
+		FileBuffer fileBuffer = FileMonitoringEngine.newFileBuffer("/tmp/buffer", 100);
+		startWritingToFile();
 		stopOnEnterKey();
 
 		String line;
 		while (true) {
 			if (runnig) {
-				while ((line = fileTail.readLine()) != null) {
+				while ((line = fileBuffer.readLine()) != null) {
 					System.out.println("<li>" + line + "</li>");
 				}
 			} else {
@@ -30,8 +35,8 @@ public class TestFileTail {
 				// fileTail = null;
 				// System.out.println("fileTail is now NULL !!!");
 				// }
-				if (fileTail.isRunnig()) {
-					fileTail.stop();
+				if (fileBuffer.isEnabled()) {
+					fileBuffer.setEnabled(false);
 					System.out.println("fileTail is now stopped !!!");
 				}
 			}
@@ -42,6 +47,32 @@ public class TestFileTail {
 			}
 		}
 
+	}
+
+
+	/**
+     * 
+     */
+	private static void startWritingToFile() {
+		Thread t = new Thread(new Runnable() {
+			public void run() {
+				PrintWriter writer;
+				try {
+					writer = new PrintWriter(new FileWriter(new File("/tmp/buffer")));
+					while (true) {
+						writer.println("random number: " + Math.random());
+						writer.flush();
+						try {
+							Thread.sleep(1);
+						} catch (InterruptedException e) {
+						}
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		t.start();
 	}
 
 

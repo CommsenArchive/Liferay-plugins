@@ -41,6 +41,8 @@ import javax.portlet.RenderResponse;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 
+import com.commsen.file.monitor.FileBuffer;
+import com.commsen.file.monitor.FileMonitoringEngine;
 import com.liferay.portal.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -63,7 +65,7 @@ public class TailgatePortlet extends GenericPortlet {
 
 	private static final String FILE_NAME = "fileName";
 	private static final String LINES = "lines";
-	private static final String SESSION_KEY_FILE_TAIL = FileTail.class.getName();
+	private static final String SESSION_KEY_FILE_BUFFER = FileBuffer.class.getName();
 	private static final String SESSION_KEY_LAST_LINES = "com.commsen.liferay.portlet.tailgate.LINES";
 	private static final int DEFAULT_NUMBER_OF_LINES = 100;
 
@@ -124,12 +126,12 @@ public class TailgatePortlet extends GenericPortlet {
 
 		SessionMessages.add(request, "tailgate-message:config-saved");
 
-		final FileTail fileTail = (FileTail) request.getPortletSession().getAttribute(SESSION_KEY_FILE_TAIL);
-		if (fileTail != null && fileTail.getFileName().equals(new File(filename).getCanonicalPath())) {
+		final FileBuffer fileBuffer = (FileBuffer) request.getPortletSession().getAttribute(SESSION_KEY_FILE_BUFFER);
+		if (fileBuffer != null && fileBuffer.getFileName().equals(new File(filename).getCanonicalPath())) {
 			return;
 		}
 
-		initFileTail(request);
+		initFileBuffer(request);
 	}
 
 
@@ -140,9 +142,9 @@ public class TailgatePortlet extends GenericPortlet {
 	 */
 	@Override
 	public void serveResource(final ResourceRequest request, final ResourceResponse response) throws PortletException, IOException {
-		FileTail fileTail = (FileTail) request.getPortletSession().getAttribute(SESSION_KEY_FILE_TAIL);
-		if (fileTail == null && initFileTail(request)) {
-			fileTail = (FileTail) request.getPortletSession().getAttribute(SESSION_KEY_FILE_TAIL);
+		FileBuffer fileBuffer = (FileBuffer) request.getPortletSession().getAttribute(SESSION_KEY_FILE_BUFFER);
+		if (fileBuffer == null && initFileBuffer(request)) {
+			fileBuffer = (FileBuffer) request.getPortletSession().getAttribute(SESSION_KEY_FILE_BUFFER);
 		}
 		@SuppressWarnings("unchecked")
 		Queue<String> lastLines = (Queue) request.getPortletSession().getAttribute(SESSION_KEY_LAST_LINES);
@@ -151,15 +153,15 @@ public class TailgatePortlet extends GenericPortlet {
 			request.getPortletSession().setAttribute(SESSION_KEY_LAST_LINES, lastLines);
 		}
 
-		if (fileTail != null) {
-			if (!fileTail.isRunnig()) {
-				fileTail.start();
+		if (fileBuffer != null) {
+			if (!fileBuffer.isEnabled()) {
+				fileBuffer.setEnabled(true);
 			}
 			String line;
 			final PrintWriter writer = response.getWriter();
-			while ((line = fileTail.readLine()) != null) {
+			while ((line = fileBuffer.readLine()) != null) {
 				lastLines.add(line);
-				if (lastLines.size() > fileTail.getLines()) {
+				if (lastLines.size() > fileBuffer.getMaxSize()) {
 					lastLines.remove();
 				}
 				writer.println("<li>" + line + "</li>");
@@ -180,7 +182,7 @@ public class TailgatePortlet extends GenericPortlet {
 	}
 
 
-	private boolean initFileTail(final PortletRequest request) throws IOException {
+	private boolean initFileBuffer(final PortletRequest request) throws IOException {
 		final PortletPreferences prefs = request.getPreferences();
 		final String fileName = prefs.getValue(FILE_NAME, null);
 
@@ -195,8 +197,8 @@ public class TailgatePortlet extends GenericPortlet {
 			return false;
 		}
 
-		final FileTail fileTail = new FileTail(new File(fileName), lines);
-		request.getPortletSession().setAttribute(SESSION_KEY_FILE_TAIL, fileTail);
+		final FileBuffer fileBuffer = FileMonitoringEngine.newFileBuffer(fileName, lines);
+		request.getPortletSession().setAttribute(SESSION_KEY_FILE_BUFFER, fileBuffer);
 		return true;
 	}
 
