@@ -6,7 +6,7 @@
 	<groupId>com.commsen.liferay.portlet.tailgate</groupId>
 	<artifactId>tailgate-portlet</artifactId>
 	<packaging>war</packaging>
-	<version>5.2.3.1.0</version>
+	<version>5.2.3.1.1-SNAPSHOT</version>
 	<name>Tailgate</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
