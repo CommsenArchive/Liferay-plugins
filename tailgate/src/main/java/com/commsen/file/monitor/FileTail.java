@@ -78,7 +78,7 @@ public class FileTail implements FileObserver, FileBuffer {
 	 * (non-Javadoc)
 	 * @see com.commsen.liferay.portlet.tailgate.FileBuffer#start()
 	 */
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(final boolean enabled) {
 		if (enabled) {
 			FileMonitoringEngine.register(this);
 		} else {
