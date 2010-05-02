@@ -53,7 +53,7 @@ public class FileMonitor implements Runnable {
      */
 	FileMonitor(final String fileName) {
 		if (fileName == null) {
-			throw new IllegalArgumentException("Filane is null");
+			throw new IllegalArgumentException("File name is null");
 		}
 		this.file = new File(fileName);
 		if (file.exists() && file.isDirectory()) {
@@ -71,7 +71,7 @@ public class FileMonitor implements Runnable {
 		try {
 			filename = this.file.getCanonicalPath();
 		} catch (IOException e) {
-			LOG.log(Level.WARNING, "Filed to get canonical name!", e);
+			LOG.log(Level.WARNING, "Failed to get canonical name!", e);
 		}
 		return filename;
 	}
@@ -150,7 +150,7 @@ public class FileMonitor implements Runnable {
 			LOG.log(Level.SEVERE, "File not found", e1);
 			return;
 		} catch (IOException e) {
-			LOG.log(Level.SEVERE, "Failed to move to the and of file", e);
+			LOG.log(Level.SEVERE, "Failed to move to the end of file", e);
 			return;
 		}
 
