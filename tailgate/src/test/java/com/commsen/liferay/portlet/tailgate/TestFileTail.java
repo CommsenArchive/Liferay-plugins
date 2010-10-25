@@ -73,8 +73,9 @@ public class TestFileTail {
 				PrintWriter writer;
 				try {
 					writer = new PrintWriter(new FileWriter(new File("/tmp/buffer")));
+					int count = 0;
 					while (true) {
-						writer.println("random number: " + Math.random());
+						writer.println(++count + ". random number: " + Math.random());
 						writer.flush();
 						try {
 							Thread.sleep(100);
