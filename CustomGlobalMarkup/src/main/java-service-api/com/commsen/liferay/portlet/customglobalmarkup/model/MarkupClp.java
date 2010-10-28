@@ -1,7 +1,7 @@
 package com.commsen.liferay.portlet.customglobalmarkup.model;
 
-import com.liferay.portal.kernel.bean.ReadOnlyBeanHandler;
-import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.impl.BaseModelImpl;
 
 import java.io.Serializable;
@@ -88,21 +88,8 @@ public class MarkupClp extends BaseModelImpl<Markup> implements Markup {
         if (isEscapedModel()) {
             return this;
         } else {
-            Markup model = new MarkupClp();
-
-            model.setEscapedModel(true);
-
-            model.setId(getId());
-            model.setCompanyId(getCompanyId());
-            model.setGroupId(getGroupId());
-            model.setMarkup(HtmlUtil.escape(getMarkup()));
-            model.setActive(getActive());
-            model.setLocation(getLocation());
-
-            model = (Markup) Proxy.newProxyInstance(Markup.class.getClassLoader(),
-                    new Class[] { Markup.class }, new ReadOnlyBeanHandler(model));
-
-            return model;
+            return (Markup) Proxy.newProxyInstance(Markup.class.getClassLoader(),
+                new Class[] { Markup.class }, new AutoEscapeBeanHandler(this));
         }
     }
 
@@ -158,7 +145,7 @@ public class MarkupClp extends BaseModelImpl<Markup> implements Markup {
     }
 
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        StringBundler sb = new StringBundler(13);
 
         sb.append("{id=");
         sb.append(getId());
@@ -178,7 +165,7 @@ public class MarkupClp extends BaseModelImpl<Markup> implements Markup {
     }
 
     public String toXmlString() {
-        StringBuilder sb = new StringBuilder();
+        StringBundler sb = new StringBundler(22);
 
         sb.append("<model><model-name>");
         sb.append("com.commsen.liferay.portlet.customglobalmarkup.model.Markup");

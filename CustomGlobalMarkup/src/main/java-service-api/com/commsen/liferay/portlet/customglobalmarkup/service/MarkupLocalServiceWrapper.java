@@ -1,32 +1,21 @@
 package com.commsen.liferay.portlet.customglobalmarkup.service;
 
-import com.liferay.portal.kernel.annotation.Isolation;
-import com.liferay.portal.kernel.annotation.Propagation;
-import com.liferay.portal.kernel.annotation.Transactional;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
-
 /**
- * The interface for the markup local service.
- *
  * <p>
- * Never modify or reference this interface directly. Always use {@link MarkupLocalServiceUtil} to access the markup local service. Add custom service methods to {@link com.commsen.liferay.portlet.customglobalmarkup.service.impl.MarkupLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
+ * This class is a wrapper for {@link MarkupLocalService}.
  * </p>
  *
- * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
- * </p>
- *
- * @author Milen Dyankov
- * @see MarkupLocalServiceUtil
- * @see com.commsen.liferay.portlet.customglobalmarkup.service.base.MarkupLocalServiceBaseImpl
- * @see com.commsen.liferay.portlet.customglobalmarkup.service.impl.MarkupLocalServiceImpl
+ * @author    Milen Dyankov
+ * @see       MarkupLocalService
  * @generated
  */
-@Transactional(isolation = Isolation.PORTAL, rollbackFor =  {
-    PortalException.class, SystemException.class}
-)
-public interface MarkupLocalService {
+public class MarkupLocalServiceWrapper implements MarkupLocalService {
+    private MarkupLocalService _markupLocalService;
+
+    public MarkupLocalServiceWrapper(MarkupLocalService markupLocalService) {
+        _markupLocalService = markupLocalService;
+    }
+
     /**
     * Adds the markup to the database. Also notifies the appropriate model listeners.
     *
@@ -36,7 +25,9 @@ public interface MarkupLocalService {
     */
     public com.commsen.liferay.portlet.customglobalmarkup.model.Markup addMarkup(
         com.commsen.liferay.portlet.customglobalmarkup.model.Markup markup)
-        throws com.liferay.portal.kernel.exception.SystemException;
+        throws com.liferay.portal.kernel.exception.SystemException {
+        return _markupLocalService.addMarkup(markup);
+    }
 
     /**
     * Creates a new markup with the primary key. Does not add the markup to the database.
@@ -45,7 +36,9 @@ public interface MarkupLocalService {
     * @return the new markup
     */
     public com.commsen.liferay.portlet.customglobalmarkup.model.Markup createMarkup(
-        long id);
+        long id) {
+        return _markupLocalService.createMarkup(id);
+    }
 
     /**
     * Deletes the markup with the primary key from the database. Also notifies the appropriate model listeners.
@@ -56,7 +49,9 @@ public interface MarkupLocalService {
     */
     public void deleteMarkup(long id)
         throws com.liferay.portal.kernel.exception.PortalException,
-            com.liferay.portal.kernel.exception.SystemException;
+            com.liferay.portal.kernel.exception.SystemException {
+        _markupLocalService.deleteMarkup(id);
+    }
 
     /**
     * Deletes the markup from the database. Also notifies the appropriate model listeners.
@@ -66,7 +61,9 @@ public interface MarkupLocalService {
     */
     public void deleteMarkup(
         com.commsen.liferay.portlet.customglobalmarkup.model.Markup markup)
-        throws com.liferay.portal.kernel.exception.SystemException;
+        throws com.liferay.portal.kernel.exception.SystemException {
+        _markupLocalService.deleteMarkup(markup);
+    }
 
     /**
     * Performs a dynamic query on the database and returns the matching rows.
@@ -78,7 +75,9 @@ public interface MarkupLocalService {
     @SuppressWarnings("rawtypes")
     public java.util.List dynamicQuery(
         com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery)
-        throws com.liferay.portal.kernel.exception.SystemException;
+        throws com.liferay.portal.kernel.exception.SystemException {
+        return _markupLocalService.dynamicQuery(dynamicQuery);
+    }
 
     /**
     * Performs a dynamic query on the database and returns a range of the matching rows.
@@ -96,7 +95,9 @@ public interface MarkupLocalService {
     @SuppressWarnings("rawtypes")
     public java.util.List dynamicQuery(
         com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery, int start,
-        int end) throws com.liferay.portal.kernel.exception.SystemException;
+        int end) throws com.liferay.portal.kernel.exception.SystemException {
+        return _markupLocalService.dynamicQuery(dynamicQuery, start, end);
+    }
 
     /**
     * Performs a dynamic query on the database and returns an ordered range of the matching rows.
@@ -117,7 +118,10 @@ public interface MarkupLocalService {
         com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery, int start,
         int end,
         com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
-        throws com.liferay.portal.kernel.exception.SystemException;
+        throws com.liferay.portal.kernel.exception.SystemException {
+        return _markupLocalService.dynamicQuery(dynamicQuery, start, end,
+            orderByComparator);
+    }
 
     /**
     * Counts the number of rows that match the dynamic query.
@@ -128,7 +132,9 @@ public interface MarkupLocalService {
     */
     public long dynamicQueryCount(
         com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery)
-        throws com.liferay.portal.kernel.exception.SystemException;
+        throws com.liferay.portal.kernel.exception.SystemException {
+        return _markupLocalService.dynamicQueryCount(dynamicQuery);
+    }
 
     /**
     * Gets the markup with the primary key.
@@ -138,11 +144,12 @@ public interface MarkupLocalService {
     * @throws PortalException if a markup with the primary key could not be found
     * @throws SystemException if a system exception occurred
     */
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public com.commsen.liferay.portlet.customglobalmarkup.model.Markup getMarkup(
         long id)
         throws com.liferay.portal.kernel.exception.PortalException,
-            com.liferay.portal.kernel.exception.SystemException;
+            com.liferay.portal.kernel.exception.SystemException {
+        return _markupLocalService.getMarkup(id);
+    }
 
     /**
     * Gets a range of all the markups.
@@ -156,10 +163,11 @@ public interface MarkupLocalService {
     * @return the range of markups
     * @throws SystemException if a system exception occurred
     */
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public java.util.List<com.commsen.liferay.portlet.customglobalmarkup.model.Markup> getMarkups(
         int start, int end)
-        throws com.liferay.portal.kernel.exception.SystemException;
+        throws com.liferay.portal.kernel.exception.SystemException {
+        return _markupLocalService.getMarkups(start, end);
+    }
 
     /**
     * Gets the number of markups.
@@ -167,9 +175,10 @@ public interface MarkupLocalService {
     * @return the number of markups
     * @throws SystemException if a system exception occurred
     */
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public int getMarkupsCount()
-        throws com.liferay.portal.kernel.exception.SystemException;
+        throws com.liferay.portal.kernel.exception.SystemException {
+        return _markupLocalService.getMarkupsCount();
+    }
 
     /**
     * Updates the markup in the database. Also notifies the appropriate model listeners.
@@ -180,7 +189,9 @@ public interface MarkupLocalService {
     */
     public com.commsen.liferay.portlet.customglobalmarkup.model.Markup updateMarkup(
         com.commsen.liferay.portlet.customglobalmarkup.model.Markup markup)
-        throws com.liferay.portal.kernel.exception.SystemException;
+        throws com.liferay.portal.kernel.exception.SystemException {
+        return _markupLocalService.updateMarkup(markup);
+    }
 
     /**
     * Updates the markup in the database. Also notifies the appropriate model listeners.
@@ -193,21 +204,34 @@ public interface MarkupLocalService {
     public com.commsen.liferay.portlet.customglobalmarkup.model.Markup updateMarkup(
         com.commsen.liferay.portlet.customglobalmarkup.model.Markup markup,
         boolean merge)
-        throws com.liferay.portal.kernel.exception.SystemException;
+        throws com.liferay.portal.kernel.exception.SystemException {
+        return _markupLocalService.updateMarkup(markup, merge);
+    }
 
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public java.util.List<com.commsen.liferay.portlet.customglobalmarkup.model.Markup> getMarkups(
-        long groupId);
+        long groupId) {
+        return _markupLocalService.getMarkups(groupId);
+    }
 
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public java.util.List<com.commsen.liferay.portlet.customglobalmarkup.model.Markup> getActiveTopMarkups(
-        long groupId);
+        long groupId) {
+        return _markupLocalService.getActiveTopMarkups(groupId);
+    }
 
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public java.util.List<com.commsen.liferay.portlet.customglobalmarkup.model.Markup> getActiveBottomMarkups(
-        long groupId);
+        long groupId) {
+        return _markupLocalService.getActiveBottomMarkups(groupId);
+    }
 
-    public void activate(long id);
+    public void activate(long id) {
+        _markupLocalService.activate(id);
+    }
 
-    public void deactivate(long id);
+    public void deactivate(long id) {
+        _markupLocalService.deactivate(id);
+    }
+
+    public MarkupLocalService getWrappedMarkupLocalService() {
+        return _markupLocalService;
+    }
 }

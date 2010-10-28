@@ -13,7 +13,7 @@ import java.util.List;
 
 
 public class ClpSerializer {
-    public static final String SERVLET_CONTEXT_NAME = "CustomGlobalMarkup";
+    public static final String SERVLET_CONTEXT_NAME = "custom-global-markup-portlet";
     private static Log _log = LogFactoryUtil.getLog(ClpSerializer.class);
     private static ClassLoader _classLoader;
 
@@ -21,7 +21,7 @@ public class ClpSerializer {
         _classLoader = classLoader;
     }
 
-    public static Object translateInput(BaseModel oldModel) {
+    public static Object translateInput(BaseModel<?> oldModel) {
         Class<?> oldModelClass = oldModel.getClass();
 
         String oldModelClassName = oldModelClass.getName();
@@ -108,16 +108,16 @@ public class ClpSerializer {
     }
 
     public static Object translateInput(Object obj) {
-        if (obj instanceof BaseModel) {
-            return translateInput((BaseModel) obj);
-        } else if (obj instanceof List) {
+        if (obj instanceof BaseModel<?>) {
+            return translateInput((BaseModel<?>) obj);
+        } else if (obj instanceof List<?>) {
             return translateInput((List<Object>) obj);
         } else {
             return obj;
         }
     }
 
-    public static Object translateOutput(BaseModel oldModel) {
+    public static Object translateOutput(BaseModel<?> oldModel) {
         Class<?> oldModelClass = oldModel.getClass();
 
         String oldModelClassName = oldModelClass.getName();
@@ -138,21 +138,21 @@ public class ClpSerializer {
                     Long value0 = (Long) method0.invoke(oldModel,
                             (Object[]) null);
 
-                    newModel.setId(value0.longValue());
+                    newModel.setId(value0);
 
                     Method method1 = oldModelClass.getMethod("getCompanyId");
 
                     Long value1 = (Long) method1.invoke(oldModel,
                             (Object[]) null);
 
-                    newModel.setCompanyId(value1.longValue());
+                    newModel.setCompanyId(value1);
 
                     Method method2 = oldModelClass.getMethod("getGroupId");
 
                     Long value2 = (Long) method2.invoke(oldModel,
                             (Object[]) null);
 
-                    newModel.setGroupId(value2.longValue());
+                    newModel.setGroupId(value2);
 
                     Method method3 = oldModelClass.getMethod("getMarkup");
 
@@ -166,14 +166,14 @@ public class ClpSerializer {
                     Boolean value4 = (Boolean) method4.invoke(oldModel,
                             (Object[]) null);
 
-                    newModel.setActive(value4.booleanValue());
+                    newModel.setActive(value4);
 
                     Method method5 = oldModelClass.getMethod("getLocation");
 
                     Short value5 = (Short) method5.invoke(oldModel,
                             (Object[]) null);
 
-                    newModel.setLocation(value5.shortValue());
+                    newModel.setLocation(value5);
 
                     return newModel;
                 } catch (Exception e) {
@@ -200,9 +200,9 @@ public class ClpSerializer {
     }
 
     public static Object translateOutput(Object obj) {
-        if (obj instanceof BaseModel) {
-            return translateOutput((BaseModel) obj);
-        } else if (obj instanceof List) {
+        if (obj instanceof BaseModel<?>) {
+            return translateOutput((BaseModel<?>) obj);
+        } else if (obj instanceof List<?>) {
             return translateOutput((List<Object>) obj);
         } else {
             return obj;

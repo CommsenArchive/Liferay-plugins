@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.commsen.liferay.portlet.customglobalmarkup</groupId>
 	<artifactId>custom-global-markup-portlet</artifactId>
 	<packaging>war</packaging>
-	<version>5.2.3.1.2</version>
+	<version>6.0.5.1</version>
 	<name>Custom Global Markup</name>
 	<url>http://www.commsen.com</url>
+
+	<properties>
+		<liferay.auto.deploy.dir>../bundles/liferay-portal-6.0/deploy</liferay.auto.deploy.dir>
+		<liferay.version>6.0.5</liferay.version>
+		<liferay.api.dir>${basedir}/src/main/java-service-api</liferay.api.dir>
+	</properties>
+
 	<dependencies>
-		<dependency>
-			<groupId>com.commsen.liferay</groupId>
-			<artifactId>liferay-lib</artifactId>
-			<version>5.2.3-r2</version>
-			<scope>provided</scope>
-			<type>pom</type>
-		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -33,117 +34,79 @@
 			<artifactId>standard</artifactId>
 			<version>1.1.2</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>com.liferay.portal</groupId>
+			<artifactId>portal-service</artifactId>
+			<version>${liferay.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.liferay.portal</groupId>
+			<artifactId>util-bridges</artifactId>
+			<version>${liferay.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.liferay.portal</groupId>
+			<artifactId>util-taglib</artifactId>
+			<version>${liferay.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.liferay.portal</groupId>
+			<artifactId>util-java</artifactId>
+			<version>${liferay.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.portlet</groupId>
+			<artifactId>portlet-api</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.4</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
-	<properties>
-		<service.api.folder>src/main/java-service-api</service.api.folder>
-	</properties>
-
-	<profiles>
-		<profile>
-			<id>default profile</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-		</profile>
-		<profile>
-			<id>translate</id>
-			<activation>
-				<property>
-					<name>translate</name>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.commsen.liferay</groupId>
-						<artifactId>liferay-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>generate-sources</phase>
-								<goals>
-									<goal>translate</goal>
-								</goals>
-								<configuration>
-									<langDir>${basedir}/src/main/resources/content</langDir>
-									<langFile>Language</langFile>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>build-service</id>
-			<activation>
-				<property>
-					<name>build-service</name>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.commsen.liferay</groupId>
-						<artifactId>liferay-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>generate-sources</phase>
-								<goals>
-									<goal>build-service</goal>
-								</goals>
-								<configuration>
-									<serviceApiFolderName>${service.api.folder}</serviceApiFolderName>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>service builder profile</id>
-			<activation>
-				<file>
-					<exists>src/main/webapp/WEB-INF/service.xml</exists>
-				</file>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>com.commsen.liferay.portal.libraries</groupId>
-					<artifactId>util-java</artifactId>
-					<version>5.2.3</version>
-				</dependency>
-			</dependencies>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>build-helper-maven-plugin</artifactId>
-						<version>1.3</version>
-						<executions>
-							<execution>
-								<id>add-source</id>
-								<phase>generate-sources</phase>
-								<goals>
-									<goal>add-source</goal>
-								</goals>
-								<configuration>
-									<sources>
-										<source>${service.api.folder}</source>
-									</sources>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${liferay.api.dir}</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>com.liferay.maven.plugins</groupId>
+				<artifactId>liferay-maven-plugin</artifactId>
+				<version>${liferay.version}</version>
+				<configuration>
+					<autoDeployDir>${liferay.auto.deploy.dir}</autoDeployDir>
+					<apiDir>${liferay.api.dir}</apiDir>
+				</configuration>
+			</plugin>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>

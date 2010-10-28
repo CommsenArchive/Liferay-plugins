@@ -38,8 +38,8 @@ import javax.portlet.RenderResponse;
 import com.commsen.liferay.portlet.customglobalmarkup.model.Markup;
 import com.commsen.liferay.portlet.customglobalmarkup.service.MarkupLocalServiceUtil;
 import com.liferay.counter.service.CounterLocalServiceUtil;
-import com.liferay.portal.PortalException;
-import com.liferay.portal.SystemException;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -65,7 +65,16 @@ public class CustomGlobalMarkupConfigurationPortlet extends GenericPortlet {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws PortletException, IOException {
-		List<Markup> markups = MarkupLocalServiceUtil.getMarkups(PortalUtil.getScopeGroupId(renderRequest));
+		List<Markup> markups = Collections.emptyList();
+		try {
+			markups = MarkupLocalServiceUtil.getMarkups(PortalUtil.getScopeGroupId(renderRequest));
+		} catch (PortalException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		PortletSession session = renderRequest.getPortletSession();
 		Map<Long, Markup> inMemoryMarkups = (Map<Long, Markup>) session.getAttribute(KEY);
@@ -89,7 +98,7 @@ public class CustomGlobalMarkupConfigurationPortlet extends GenericPortlet {
 
 
 	@ProcessAction(name = "add")
-	public void addMarkup(ActionRequest request, ActionResponse response) throws SystemException {
+	public void addMarkup(ActionRequest request, ActionResponse response) throws SystemException, PortalException {
 		Markup markup = MarkupLocalServiceUtil.createMarkup(CounterLocalServiceUtil.increment(Markup.class.getName()));
 		markup.setActive(false);
 		markup.setCompanyId(PortalUtil.getCompanyId(request));

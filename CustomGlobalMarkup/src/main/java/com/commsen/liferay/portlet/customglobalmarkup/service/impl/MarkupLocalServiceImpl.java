@@ -7,13 +7,36 @@ import com.commsen.liferay.portlet.customglobalmarkup.CustomGlobalMarkupLocation
 import com.commsen.liferay.portlet.customglobalmarkup.model.Markup;
 import com.commsen.liferay.portlet.customglobalmarkup.service.base.MarkupLocalServiceBaseImpl;
 import com.commsen.liferay.portlet.customglobalmarkup.service.persistence.MarkupUtil;
-import com.liferay.portal.PortalException;
-import com.liferay.portal.SystemException;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+/**
+ * The implementation of the markup local service.
+ * 
+ * <p>
+ * All custom service methods should be put in this class. Whenever methods are added, rerun
+ * ServiceBuilder to copy their definitions into the
+ * {@link com.commsen.liferay.portlet.customglobalmarkup.service.MarkupLocalService} interface.
+ * </p>
+ * 
+ * <p>
+ * Never reference this interface directly. Always use
+ * {@link com.commsen.liferay.portlet.customglobalmarkup.service.MarkupLocalServiceUtil} to access
+ * the markup local service.
+ * </p>
+ * 
+ * <p>
+ * This is a local service. Methods of this service will not have security checks based on the
+ * propagated JAAS credentials because this service can only be accessed from within the same VM.
+ * </p>
+ * 
+ * @author Milen Dyankov
+ * @see com.commsen.liferay.portlet.customglobalmarkup.service.base.MarkupLocalServiceBaseImpl
+ * @see com.commsen.liferay.portlet.customglobalmarkup.service.MarkupLocalServiceUtil
+ */
 public class MarkupLocalServiceImpl extends MarkupLocalServiceBaseImpl {
-
 	public List<Markup> getMarkups(long groupId) {
 
 		List<Markup> markups = Collections.emptyList();

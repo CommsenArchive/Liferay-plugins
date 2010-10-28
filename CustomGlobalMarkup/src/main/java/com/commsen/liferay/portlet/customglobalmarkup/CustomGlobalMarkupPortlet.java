@@ -27,8 +27,11 @@ import javax.portlet.RenderResponse;
 
 import com.commsen.liferay.portlet.customglobalmarkup.model.Markup;
 import com.commsen.liferay.portlet.customglobalmarkup.service.MarkupLocalServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.util.PortalUtil;
 
@@ -41,11 +44,20 @@ public class CustomGlobalMarkupPortlet extends GenericPortlet {
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
 
 		// get and prepare code to be added to header section
-		List<Markup> topMarkups = MarkupLocalServiceUtil.getActiveTopMarkups(PortalUtil.getScopeGroupId(renderRequest));
+		List<Markup> topMarkups = null;
+		try {
+			topMarkups = MarkupLocalServiceUtil.getActiveTopMarkups(PortalUtil.getScopeGroupId(renderRequest));
+		} catch (PortalException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		if (!topMarkups.isEmpty()) {
-			StringBuilder sb = (StringBuilder) renderRequest.getAttribute(WebKeys.PAGE_TOP);
-			if (sb == null) sb = new StringBuilder();
+		if (topMarkups != null && !topMarkups.isEmpty()) {
+			StringBundler sb = (StringBundler) renderRequest.getAttribute(WebKeys.PAGE_TOP);
+			if (sb == null) sb = new StringBundler();
 			for (Markup markup : topMarkups) {
 				sb.append(markup.getMarkup()).append("\n");
 			}
@@ -53,11 +65,20 @@ public class CustomGlobalMarkupPortlet extends GenericPortlet {
 		}
 
 		// get and prepare code to be added to the bottom of the page
-		List<Markup> bottomMarkups = MarkupLocalServiceUtil.getActiveBottomMarkups(PortalUtil.getScopeGroupId(renderRequest));
+		List<Markup> bottomMarkups = null;
+		try {
+			bottomMarkups = MarkupLocalServiceUtil.getActiveBottomMarkups(PortalUtil.getScopeGroupId(renderRequest));
+		} catch (PortalException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		if (!bottomMarkups.isEmpty()) {
-			StringBuilder sb = (StringBuilder) renderRequest.getAttribute(WebKeys.PAGE_BOTTOM);
-			if (sb == null) sb = new StringBuilder();
+		if (bottomMarkups != null && !bottomMarkups.isEmpty()) {
+			StringBundler sb = (StringBundler) renderRequest.getAttribute(WebKeys.PAGE_BOTTOM);
+			if (sb == null) sb = new StringBundler();
 			for (Markup markup : bottomMarkups) {
 				sb.append(markup.getMarkup()).append("\n");
 			}

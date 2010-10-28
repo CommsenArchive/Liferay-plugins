@@ -2,6 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping default-lazy="false" auto-import="false">
+	<import class="com.commsen.liferay.portlet.customglobalmarkup.model.Markup" />
 	<class name="com.commsen.liferay.portlet.customglobalmarkup.model.impl.MarkupImpl" table="CGM_Markup">
 		<cache usage="read-write" />
 		<id name="id" column="id_" type="long">

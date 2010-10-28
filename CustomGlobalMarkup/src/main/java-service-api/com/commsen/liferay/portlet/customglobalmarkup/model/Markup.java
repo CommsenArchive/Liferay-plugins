@@ -1,30 +1,21 @@
 package com.commsen.liferay.portlet.customglobalmarkup.model;
 
-
 /**
- * <a href="Markup.java.html"><b><i>View Source</i></b></a>
+ * The model interface for the Markup service. Represents a row in the &quot;CGM_Markup&quot; database table, with each column mapped to a property of this class.
  *
  * <p>
- * ServiceBuilder generated this class. Modifications in this class will be
- * overwritten the next time is generated.
+ * Never modify this interface directly. Add methods to {@link com.commsen.liferay.portlet.customglobalmarkup.model.impl.MarkupImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
  * </p>
  *
  * <p>
- * This interface is a model that represents the <code>Markup</code> table
- * in the database.
+ * Never reference this interface directly. All methods that expect a markup model instance should use the {@link Markup} interface instead.
  * </p>
  *
- * <p>
- * Customize <code>com.commsen.liferay.portlet.customglobalmarkup.model.impl.MarkupImpl</code>
- * and rerun the ServiceBuilder to generate the new methods.
- * </p>
- *
- * @author Brian Wing Shun Chan
- *
- * @see com.commsen.liferay.portlet.customglobalmarkup.model.MarkupModel
+ * @author Milen Dyankov
+ * @see MarkupModel
  * @see com.commsen.liferay.portlet.customglobalmarkup.model.impl.MarkupImpl
  * @see com.commsen.liferay.portlet.customglobalmarkup.model.impl.MarkupModelImpl
- *
+ * @generated
  */
 public interface Markup extends MarkupModel {
 }
