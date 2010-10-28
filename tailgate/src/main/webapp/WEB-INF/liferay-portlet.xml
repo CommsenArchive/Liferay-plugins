@@ -8,6 +8,7 @@
 		<instanceable>true</instanceable>
 		<header-portlet-css>/css/tailgate.css</header-portlet-css>
 		<header-portlet-javascript>/js/tailgate.js</header-portlet-javascript>
+		<header-portlet-javascript>/js/jquery-1.4.3.min.js</header-portlet-javascript>
 		<header-portlet-javascript>/js/jquery.timers.js</header-portlet-javascript>
 	</portlet>
 	<role-mapper>

@@ -16,7 +16,7 @@
  */
 
 
-$=jQuery;
+//$=jQuery;
 
 var tailgateInstances = new Array(); 
 
