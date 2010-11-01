@@ -23,8 +23,18 @@
 
 
 <span class="portlet-msg-alert">
-	Note: <code>liferay-ui:panel</code> will not roll-in and roll-out for not logged in users.
-	 The reason is that required JavaScript file is not in "javascript.barebone.files" 
+	Note: 
+	<ol>
+		<li>
+			In Liferay 5.2.3 <code>liferay-ui:panel</code> will not roll-in and roll-out for not logged in users.
+	 		The reason is that required JavaScript file is not in "javascript.barebone.files"
+	 	</li>
+		<li>
+			In Liferay 6.0.5 putting <code>liferay-ui:panel</code> outside of <code>liferay-ui:panel-container</code> throws <code>NullPointerException</code>. 
+	 		On the other hand surrounding each <code>liferay-ui:panel</code> below with <code>liferay-ui:panel-container</code> resulted in all panels being not 
+	 		"collapsible".          
+	 	</li>
+ 	</ol> 
 </span>
 
 <table width="100%" border="1">
@@ -35,65 +45,80 @@
     <th>Preview</th>
   </tr>
 
-
   <!-- 
   	liferay-ui:panel
    -->
+  <tr>
+  	<td>
+    	<code><pre>
+&lt;liferay-ui:panel-container &gt;
+	&lt;liferay-ui:panel id="panel1" title="Test panel 1" collapsible="true" extended="true" &gt;
+		Test panel
+	&lt;/liferay-ui:panel&gt;
+&lt;/liferay-ui:panel-container &gt;
+		</pre></code>
+  	</td>
+  	<td>
+  		<liferay-ui:panel-container>
+			<liferay-ui:panel id="panel1" title="Test panel 1" collapsible="true" extended="true" >
+				Test panel
+			</liferay-ui:panel>
+  		</liferay-ui:panel-container>
+  	</td>
+  </tr>
 
   <tr>
   	<td>
     	<code><pre>
-&lt;liferay-ui:panel id="panel1" title="Test panel 1" collapsible="true" extended="true" &gt;
-	Test panel
-&lt;/liferay-ui:panel&gt;
+&lt;liferay-ui:panel-container &gt;
+	&lt;liferay-ui:panel id="panel2" title="Test panel 2" collapsible="false" extended="true" &gt;
+		Test panel
+	&lt;/liferay-ui:panel&gt;
+&lt;/liferay-ui:panel-container &gt;
 		</pre></code>
   	</td>
   	<td>
-		<liferay-ui:panel id="panel1" title="Test panel 1" collapsible="true" extended="true" >
-			Test panel
-		</liferay-ui:panel>
+  		<liferay-ui:panel-container>
+			<liferay-ui:panel id="panel2" title="Test panel 2" collapsible="false" extended="true" >
+				Test panel
+			</liferay-ui:panel>
+  		</liferay-ui:panel-container>
   	</td>
   </tr>
   <tr>
   	<td>
     	<code><pre>
-&lt;liferay-ui:panel id="panel2" title="Test panel 2" collapsible="false" extended="true" &gt;
-	Test panel
-&lt;/liferay-ui:panel&gt;
+&lt;liferay-ui:panel-container &gt;
+	&lt;liferay-ui:panel id="panel3" title="Test panel 3" collapsible="true" extended="false" &gt;
+		Test panel
+	&lt;/liferay-ui:panel&gt;
+&lt;/liferay-ui:panel-container &gt;
 		</pre></code>
   	</td>
   	<td>
-		<liferay-ui:panel id="panel2" title="Test panel 2" collapsible="false" extended="true" >
-			Test panel
-		</liferay-ui:panel>
+  		<liferay-ui:panel-container>
+			<liferay-ui:panel id="panel3" title="Test panel 3" collapsible="true" extended="false" >
+				Test panel
+			</liferay-ui:panel>
+  		</liferay-ui:panel-container>
   	</td>
   </tr>
   <tr>
   	<td>
     	<code><pre>
-&lt;liferay-ui:panel id="panel3" title="Test panel 3" collapsible="true" extended="false" &gt;
-	Test panel
-&lt;/liferay-ui:panel&gt;
+&lt;liferay-ui:panel-container &gt;
+	&lt;liferay-ui:panel id="panel4" title="Test panel 4" collapsible="false" extended="false" &gt;
+		Test panel
+	&lt;/liferay-ui:panel&gt;
+&lt;/liferay-ui:panel-container &gt;
 		</pre></code>
   	</td>
   	<td>
-		<liferay-ui:panel id="panel3" title="Test panel 3" collapsible="true" extended="false" >
-			Test panel
-		</liferay-ui:panel>
-  	</td>
-  </tr>
-  <tr>
-  	<td>
-    	<code><pre>
-&lt;liferay-ui:panel id="panel4" title="Test panel 4" collapsible="false" extended="false" &gt;
-	Test panel
-&lt;/liferay-ui:panel&gt;
-		</pre></code>
-  	</td>
-  	<td>
-		<liferay-ui:panel id="panel4" title="Test panel 4" collapsible="false" extended="false" >
-			Test panel
-		</liferay-ui:panel>
+  		<liferay-ui:panel-container>
+			<liferay-ui:panel id="panel4" title="Test panel 4" collapsible="false" extended="false" >
+				Test panel
+			</liferay-ui:panel>
+  		</liferay-ui:panel-container>
   	</td>
   </tr>
   

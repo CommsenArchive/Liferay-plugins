@@ -155,7 +155,6 @@ left.add(new KeyValuePair("item3key", "item3value"));
 right.add(new KeyValuePair("item2key", "item2value"));
 %&gt;
 &lt;liferay-ui:input-move-boxes 
-	formName="boo"  
 	leftBoxName="left_box"
 	leftTitle="Left box"
 	leftList="&lt;%=left %&gt;"
@@ -174,7 +173,6 @@ right.add(new KeyValuePair("item2key", "item2value"));
 		right.add(new KeyValuePair("item2key", "item2value"));
 		%>
 		<liferay-ui:input-move-boxes 
-			formName="boo"  
 			leftBoxName="left_box"
 			leftTitle="Left box"
 			leftList="<%=left %>"
