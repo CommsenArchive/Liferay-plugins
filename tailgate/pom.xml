@@ -5,7 +5,7 @@
 	<groupId>com.commsen.liferay.portlet.tailgate</groupId>
 	<artifactId>tailgate-portlet</artifactId>
 	<packaging>war</packaging>
-	<version>6.0.5.1</version>
+	<version>6.0.5.2-SNAPSHOT</version>
 	<name>Tailgate</name>
 	<url>http://www.commsen.com/</url>
 

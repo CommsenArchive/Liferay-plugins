@@ -54,7 +54,7 @@ public class TailgatePortlet extends GenericPortlet {
 	protected String helpJSP;
 	protected String viewJSP;
 
-	private static final Log _log = LogFactoryUtil.getLog(TailgatePortlet.class);
+	private static final Log LOG = LogFactoryUtil.getLog(TailgatePortlet.class);
 
 	private static final String FILE_NAME = "fileName";
 	private static final String LINES = "lines";
@@ -166,7 +166,7 @@ public class TailgatePortlet extends GenericPortlet {
 		final PortletRequestDispatcher portletRequestDispatcher = getPortletContext().getRequestDispatcher(path);
 
 		if (portletRequestDispatcher == null) {
-			_log.error(path + " is not a valid include");
+			LOG.error(path + " is not a valid include");
 		} else {
 			portletRequestDispatcher.include(renderRequest, renderResponse);
 		}

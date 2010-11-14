@@ -20,7 +20,6 @@ package com.commsen.file.monitor;
 import java.io.IOException;
 import java.util.Map;
 import java.util.WeakHashMap;
-import java.util.logging.Logger;
 
 /**
  * @author Milen Dyankov
@@ -28,13 +27,11 @@ import java.util.logging.Logger;
  */
 public class FileMonitoringEngine {
 
-	Logger log = Logger.getLogger(FileMonitoringEngine.class.getName());
-
 	private static final Map<FileObserver, FileMonitor> FILE_BUFFERS = new WeakHashMap<FileObserver, FileMonitor>();
 
 
-	public static FileBuffer newFileBuffer(String fileName, int maxSize) throws IOException {
-		FileTail fileTail = new FileTail(fileName, maxSize);
+	public static FileBuffer newFileBuffer(final String fileName, final int maxSize) throws IOException {
+		final FileTail fileTail = new FileTail(fileName, maxSize);
 		register(fileTail);
 		return fileTail;
 	}

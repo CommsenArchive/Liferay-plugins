@@ -41,7 +41,7 @@ import java.util.logging.Logger;
  */
 public class FileMonitor implements Runnable {
 
-	Logger log = Logger.getLogger(FileMonitor.class.getName());
+	private static final Logger LOG = Logger.getLogger(FileMonitor.class.getName());
 
 	private final Set<FileObserver> observers = Collections.synchronizedSet(newSetFromMap(new WeakHashMap<FileObserver, Boolean>()));
 	private final File file;
@@ -52,9 +52,13 @@ public class FileMonitor implements Runnable {
      * 
      */
 	FileMonitor(final String fileName) {
-		if (fileName == null) throw new IllegalArgumentException("Filane is null");
+		if (fileName == null) {
+			throw new IllegalArgumentException("File name is null");
+		}
 		this.file = new File(fileName);
-		if (file.exists() && file.isDirectory()) throw new IllegalArgumentException("File " + file.getAbsolutePath() + " is directory!");
+		if (file.exists() && file.isDirectory()) {
+			throw new IllegalArgumentException("File " + file.getAbsolutePath() + " is directory!");
+		}
 	}
 
 
@@ -63,21 +67,22 @@ public class FileMonitor implements Runnable {
 	 * @throws IOException
 	 */
 	public String getFileName() {
+		String filename = null;
 		try {
-			return this.file.getCanonicalPath();
+			filename = this.file.getCanonicalPath();
 		} catch (IOException e) {
-			log.log(Level.WARNING, "Filed to get canonical name!", e);
-			return null;
+			LOG.log(Level.WARNING, "Failed to get canonical name!", e);
 		}
+		return filename;
 	}
 
 
-	void addObserver(final FileObserver fileObserver) {
+	public void addObserver(final FileObserver fileObserver) {
 		observers.add(fileObserver);
 	}
 
 
-	void removeObserver(final FileObserver fileObserver) {
+	public void removeObserver(final FileObserver fileObserver) {
 		observers.remove(fileObserver);
 	}
 
@@ -92,17 +97,21 @@ public class FileMonitor implements Runnable {
 
 
 	private boolean haveListeners() {
-		if (observers == null || observers.isEmpty()) return false;
-		for (FileObserver failObserver : observers) {
-			if (failObserver != null) return true;
+		boolean result = false;
+		if (observers != null && !observers.isEmpty()) {
+			for (FileObserver failObserver : observers) {
+				if (failObserver != null) {
+					result = true;
+				}
+			}
 		}
-		return false;
+		return result;
 	}
 
 
 	private void readAndUpdateListeners() {
 		try {
-			long fileLength = file.length();
+			final long fileLength = file.length();
 			if (fileLength > raf.getFilePointer()) {
 				String line;
 				while ((line = raf.readLine()) != null) {
@@ -116,7 +125,7 @@ public class FileMonitor implements Runnable {
 				raf.seek(fileLength);
 			}
 		} catch (IOException e) {
-			log.log(Level.WARNING, "File not found", e);
+			LOG.log(Level.WARNING, "File not found", e);
 			return;
 		}
 	}
@@ -131,15 +140,17 @@ public class FileMonitor implements Runnable {
 			sleep(100);
 		}
 
-		if (file.isDirectory()) throw new IllegalArgumentException("File " + file.getAbsolutePath() + " is directory!");
+		if (file.isDirectory()) {
+			throw new IllegalArgumentException("File " + file.getAbsolutePath() + " is directory!");
+		}
 		try {
 			raf = new RandomAccessFile(file, "r");
 			raf.seek(file.length());
 		} catch (FileNotFoundException e1) {
-			log.log(Level.SEVERE, "File not found", e1);
+			LOG.log(Level.SEVERE, "File not found", e1);
 			return;
 		} catch (IOException e) {
-			log.log(Level.SEVERE, "Failed to move to the and of file", e);
+			LOG.log(Level.SEVERE, "Failed to move to the end of file", e);
 			return;
 		}
 
@@ -180,7 +191,7 @@ public class FileMonitor implements Runnable {
 	 * @return the set backed by the map
 	 * @throws IllegalArgumentException if <tt>map</tt> is not empty
 	 */
-	public static <E> Set<E> newSetFromMap(Map<E, Boolean> map) {
+	public static <E> Set<E> newSetFromMap(final Map<E, Boolean> map) {
 		return new SetFromMap<E>(map);
 	}
 
@@ -189,8 +200,10 @@ public class FileMonitor implements Runnable {
 		private transient Set<E> s; // Its keySet
 
 
-		SetFromMap(Map<E, Boolean> map) {
-			if (!map.isEmpty()) throw new IllegalArgumentException("Map is non-empty");
+		SetFromMap(final Map<E, Boolean> map) {
+			if (!map.isEmpty()) {
+				throw new IllegalArgumentException("Map is non-empty");
+			}
 			m = map;
 			s = map.keySet();
 		}
@@ -215,19 +228,19 @@ public class FileMonitor implements Runnable {
 
 
 		@Override
-		public boolean contains(Object o) {
-			return m.containsKey(o);
+		public boolean contains(final Object object) {
+			return m.containsKey(object);
 		}
 
 
 		@Override
-		public boolean remove(Object o) {
-			return m.remove(o) != null;
+		public boolean remove(final Object object) {
+			return m.remove(object) != null;
 		}
 
 
 		@Override
-		public boolean add(E e) {
+		public boolean add(final E e) {
 			return m.put(e, Boolean.TRUE) == null;
 		}
 
@@ -245,7 +258,7 @@ public class FileMonitor implements Runnable {
 
 
 		@Override
-		public <T> T[] toArray(T[] a) {
+		public <T> T[] toArray(final T[] a) {
 			return s.toArray(a);
 		}
 
@@ -263,25 +276,25 @@ public class FileMonitor implements Runnable {
 
 
 		@Override
-		public boolean equals(Object object) {
+		public boolean equals(final Object object) {
 			return this == object || this.s.equals(object);
 		}
 
 
 		@Override
-		public boolean containsAll(Collection<?> c) {
+		public boolean containsAll(final Collection<?> c) {
 			return s.containsAll(c);
 		}
 
 
 		@Override
-		public boolean removeAll(Collection<?> c) {
+		public boolean removeAll(final Collection<?> c) {
 			return s.removeAll(c);
 		}
 
 
 		@Override
-		public boolean retainAll(Collection<?> c) {
+		public boolean retainAll(final Collection<?> c) {
 			return s.retainAll(c);
 		}
 
@@ -290,7 +303,7 @@ public class FileMonitor implements Runnable {
 		static final long serialVersionUID = 0;
 
 
-		private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+		private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
 			stream.defaultReadObject();
 			s = m.keySet();
 		}
