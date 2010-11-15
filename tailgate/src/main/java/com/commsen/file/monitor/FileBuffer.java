@@ -17,11 +17,13 @@
 
 package com.commsen.file.monitor;
 
+import java.io.Serializable;
+
 /**
  * @author Milen Dyankov
  * 
  */
-public interface FileBuffer {
+public interface FileBuffer extends Serializable {
 
 	/**
 	 * @return the lines

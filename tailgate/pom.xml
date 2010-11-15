@@ -10,8 +10,7 @@
 	<url>http://www.commsen.com/</url>
 
 	<properties>
-		<liferay.auto.deploy.dir>../bundles/liferay-portal-6.0/deploy
-		</liferay.auto.deploy.dir>
+		<liferay.auto.deploy.dir>../bundles/liferay-portal-6.0/deploy</liferay.auto.deploy.dir>
 		<liferay.version>6.0.5</liferay.version>
 	</properties>
 
