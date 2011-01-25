@@ -14,10 +14,11 @@
 		<icon>/icon.png</icon>
 		<control-panel-entry-category>content</control-panel-entry-category>
 		<control-panel-entry-weight>21.0</control-panel-entry-weight>
-		<use-default-template>false</use-default-template>
+		<use-default-template>true</use-default-template>
 		<restore-current-view>false</restore-current-view>
 		<instanceable>false</instanceable>
 		<scopeable>true</scopeable>
+		<css-class-wrapper>custom-global-markup-admin</css-class-wrapper>
 		<system>true</system>
 	</portlet>
 	<role-mapper>

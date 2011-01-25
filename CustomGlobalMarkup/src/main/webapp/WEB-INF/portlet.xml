@@ -9,6 +9,7 @@
 		<supports>
 			<mime-type>text/html</mime-type>
 		</supports>
+		<resource-bundle>content.CustomGlobalMarkup</resource-bundle>
  		<security-role-ref>
 			<role-name>administrator</role-name>
 		</security-role-ref>
