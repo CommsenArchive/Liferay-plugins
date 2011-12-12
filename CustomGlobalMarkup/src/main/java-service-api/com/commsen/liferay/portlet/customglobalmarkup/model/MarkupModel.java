@@ -105,9 +105,9 @@ public interface MarkupModel extends BaseModel<Markup> {
     public boolean getActive();
 
     /**
-     * Determines whether this markup is active.
+     * Determines if this markup is active.
      *
-     * @return whether this markup is active
+     * @return <code>true</code> if this markup is active; <code>false</code> otherwise
      */
     public boolean isActive();
 

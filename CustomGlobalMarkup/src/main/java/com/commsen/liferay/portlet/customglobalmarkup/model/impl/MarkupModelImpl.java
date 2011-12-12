@@ -162,16 +162,21 @@ public class MarkupModelImpl extends BaseModelImpl<Markup>
     }
 
     public Object clone() {
-        MarkupImpl clone = new MarkupImpl();
+        MarkupImpl markupImpl = new MarkupImpl();
 
-        clone.setId(getId());
-        clone.setCompanyId(getCompanyId());
-        clone.setGroupId(getGroupId());
-        clone.setMarkup(getMarkup());
-        clone.setActive(getActive());
-        clone.setLocation(getLocation());
+        markupImpl.setId(getId());
 
-        return clone;
+        markupImpl.setCompanyId(getCompanyId());
+
+        markupImpl.setGroupId(getGroupId());
+
+        markupImpl.setMarkup(getMarkup());
+
+        markupImpl.setActive(getActive());
+
+        markupImpl.setLocation(getLocation());
+
+        return markupImpl;
     }
 
     public int compareTo(Markup markup) {

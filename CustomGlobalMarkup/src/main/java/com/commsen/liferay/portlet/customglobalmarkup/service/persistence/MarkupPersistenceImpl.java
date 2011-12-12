@@ -266,18 +266,7 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
         try {
             session = openSession();
 
-            if (markup.isCachedModel() || BatchSessionUtil.isEnabled()) {
-                Object staleObject = session.get(MarkupImpl.class,
-                        markup.getPrimaryKeyObj());
-
-                if (staleObject != null) {
-                    session.evict(staleObject);
-                }
-            }
-
-            session.delete(markup);
-
-            session.flush();
+            BatchSessionUtil.delete(session, markup);
         } catch (Exception e) {
             throw processException(e);
         } finally {
@@ -476,30 +465,30 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
                 finderArgs, this);
 
         if (list == null) {
+            StringBundler query = null;
+
+            if (orderByComparator != null) {
+                query = new StringBundler(3 +
+                        (orderByComparator.getOrderByFields().length * 3));
+            } else {
+                query = new StringBundler(2);
+            }
+
+            query.append(_SQL_SELECT_MARKUP_WHERE);
+
+            query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
+
+            if (orderByComparator != null) {
+                appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+                    orderByComparator);
+            }
+
+            String sql = query.toString();
+
             Session session = null;
 
             try {
                 session = openSession();
-
-                StringBundler query = null;
-
-                if (orderByComparator != null) {
-                    query = new StringBundler(3 +
-                            (orderByComparator.getOrderByFields().length * 3));
-                } else {
-                    query = new StringBundler(2);
-                }
-
-                query.append(_SQL_SELECT_MARKUP_WHERE);
-
-                query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
-
-                if (orderByComparator != null) {
-                    appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-                        orderByComparator);
-                }
-
-                String sql = query.toString();
 
                 Query q = session.createQuery(sql);
 
@@ -512,13 +501,14 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
                 throw processException(e);
             } finally {
                 if (list == null) {
-                    list = new ArrayList<Markup>();
+                    FinderCacheUtil.removeResult(FINDER_PATH_FIND_BY_GROUPID,
+                        finderArgs);
+                } else {
+                    cacheResult(list);
+
+                    FinderCacheUtil.putResult(FINDER_PATH_FIND_BY_GROUPID,
+                        finderArgs, list);
                 }
-
-                cacheResult(list);
-
-                FinderCacheUtil.putResult(FINDER_PATH_FIND_BY_GROUPID,
-                    finderArgs, list);
 
                 closeSession(session);
             }
@@ -789,30 +779,30 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
                 finderArgs, this);
 
         if (list == null) {
+            StringBundler query = null;
+
+            if (orderByComparator != null) {
+                query = new StringBundler(3 +
+                        (orderByComparator.getOrderByFields().length * 3));
+            } else {
+                query = new StringBundler(2);
+            }
+
+            query.append(_SQL_SELECT_MARKUP_WHERE);
+
+            query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
+
+            if (orderByComparator != null) {
+                appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+                    orderByComparator);
+            }
+
+            String sql = query.toString();
+
             Session session = null;
 
             try {
                 session = openSession();
-
-                StringBundler query = null;
-
-                if (orderByComparator != null) {
-                    query = new StringBundler(3 +
-                            (orderByComparator.getOrderByFields().length * 3));
-                } else {
-                    query = new StringBundler(2);
-                }
-
-                query.append(_SQL_SELECT_MARKUP_WHERE);
-
-                query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
-
-                if (orderByComparator != null) {
-                    appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-                        orderByComparator);
-                }
-
-                String sql = query.toString();
 
                 Query q = session.createQuery(sql);
 
@@ -825,13 +815,14 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
                 throw processException(e);
             } finally {
                 if (list == null) {
-                    list = new ArrayList<Markup>();
+                    FinderCacheUtil.removeResult(FINDER_PATH_FIND_BY_COMPANYID,
+                        finderArgs);
+                } else {
+                    cacheResult(list);
+
+                    FinderCacheUtil.putResult(FINDER_PATH_FIND_BY_COMPANYID,
+                        finderArgs, list);
                 }
-
-                cacheResult(list);
-
-                FinderCacheUtil.putResult(FINDER_PATH_FIND_BY_COMPANYID,
-                    finderArgs, list);
 
                 closeSession(session);
             }
@@ -1106,32 +1097,32 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
                 finderArgs, this);
 
         if (list == null) {
+            StringBundler query = null;
+
+            if (orderByComparator != null) {
+                query = new StringBundler(4 +
+                        (orderByComparator.getOrderByFields().length * 3));
+            } else {
+                query = new StringBundler(3);
+            }
+
+            query.append(_SQL_SELECT_MARKUP_WHERE);
+
+            query.append(_FINDER_COLUMN_GROUPIDANDLOCATION_GROUPID_2);
+
+            query.append(_FINDER_COLUMN_GROUPIDANDLOCATION_LOCATION_2);
+
+            if (orderByComparator != null) {
+                appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+                    orderByComparator);
+            }
+
+            String sql = query.toString();
+
             Session session = null;
 
             try {
                 session = openSession();
-
-                StringBundler query = null;
-
-                if (orderByComparator != null) {
-                    query = new StringBundler(4 +
-                            (orderByComparator.getOrderByFields().length * 3));
-                } else {
-                    query = new StringBundler(3);
-                }
-
-                query.append(_SQL_SELECT_MARKUP_WHERE);
-
-                query.append(_FINDER_COLUMN_GROUPIDANDLOCATION_GROUPID_2);
-
-                query.append(_FINDER_COLUMN_GROUPIDANDLOCATION_LOCATION_2);
-
-                if (orderByComparator != null) {
-                    appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-                        orderByComparator);
-                }
-
-                String sql = query.toString();
 
                 Query q = session.createQuery(sql);
 
@@ -1146,13 +1137,14 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
                 throw processException(e);
             } finally {
                 if (list == null) {
-                    list = new ArrayList<Markup>();
+                    FinderCacheUtil.removeResult(FINDER_PATH_FIND_BY_GROUPIDANDLOCATION,
+                        finderArgs);
+                } else {
+                    cacheResult(list);
+
+                    FinderCacheUtil.putResult(FINDER_PATH_FIND_BY_GROUPIDANDLOCATION,
+                        finderArgs, list);
                 }
-
-                cacheResult(list);
-
-                FinderCacheUtil.putResult(FINDER_PATH_FIND_BY_GROUPIDANDLOCATION,
-                    finderArgs, list);
 
                 closeSession(session);
             }
@@ -1447,34 +1439,34 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
                 finderArgs, this);
 
         if (list == null) {
+            StringBundler query = null;
+
+            if (orderByComparator != null) {
+                query = new StringBundler(5 +
+                        (orderByComparator.getOrderByFields().length * 3));
+            } else {
+                query = new StringBundler(4);
+            }
+
+            query.append(_SQL_SELECT_MARKUP_WHERE);
+
+            query.append(_FINDER_COLUMN_GROUPIDSTATUSANDLOCATION_GROUPID_2);
+
+            query.append(_FINDER_COLUMN_GROUPIDSTATUSANDLOCATION_ACTIVE_2);
+
+            query.append(_FINDER_COLUMN_GROUPIDSTATUSANDLOCATION_LOCATION_2);
+
+            if (orderByComparator != null) {
+                appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+                    orderByComparator);
+            }
+
+            String sql = query.toString();
+
             Session session = null;
 
             try {
                 session = openSession();
-
-                StringBundler query = null;
-
-                if (orderByComparator != null) {
-                    query = new StringBundler(5 +
-                            (orderByComparator.getOrderByFields().length * 3));
-                } else {
-                    query = new StringBundler(4);
-                }
-
-                query.append(_SQL_SELECT_MARKUP_WHERE);
-
-                query.append(_FINDER_COLUMN_GROUPIDSTATUSANDLOCATION_GROUPID_2);
-
-                query.append(_FINDER_COLUMN_GROUPIDSTATUSANDLOCATION_ACTIVE_2);
-
-                query.append(_FINDER_COLUMN_GROUPIDSTATUSANDLOCATION_LOCATION_2);
-
-                if (orderByComparator != null) {
-                    appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-                        orderByComparator);
-                }
-
-                String sql = query.toString();
 
                 Query q = session.createQuery(sql);
 
@@ -1491,13 +1483,14 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
                 throw processException(e);
             } finally {
                 if (list == null) {
-                    list = new ArrayList<Markup>();
+                    FinderCacheUtil.removeResult(FINDER_PATH_FIND_BY_GROUPIDSTATUSANDLOCATION,
+                        finderArgs);
+                } else {
+                    cacheResult(list);
+
+                    FinderCacheUtil.putResult(FINDER_PATH_FIND_BY_GROUPIDSTATUSANDLOCATION,
+                        finderArgs, list);
                 }
-
-                cacheResult(list);
-
-                FinderCacheUtil.putResult(FINDER_PATH_FIND_BY_GROUPIDSTATUSANDLOCATION,
-                    finderArgs, list);
 
                 closeSession(session);
             }
@@ -1789,27 +1782,27 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
                 finderArgs, this);
 
         if (list == null) {
+            StringBundler query = null;
+            String sql = null;
+
+            if (orderByComparator != null) {
+                query = new StringBundler(2 +
+                        (orderByComparator.getOrderByFields().length * 3));
+
+                query.append(_SQL_SELECT_MARKUP);
+
+                appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+                    orderByComparator);
+
+                sql = query.toString();
+            } else {
+                sql = _SQL_SELECT_MARKUP;
+            }
+
             Session session = null;
 
             try {
                 session = openSession();
-
-                StringBundler query = null;
-                String sql = null;
-
-                if (orderByComparator != null) {
-                    query = new StringBundler(2 +
-                            (orderByComparator.getOrderByFields().length * 3));
-
-                    query.append(_SQL_SELECT_MARKUP);
-
-                    appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-                        orderByComparator);
-
-                    sql = query.toString();
-                } else {
-                    sql = _SQL_SELECT_MARKUP;
-                }
 
                 Query q = session.createQuery(sql);
 
@@ -1826,12 +1819,14 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
                 throw processException(e);
             } finally {
                 if (list == null) {
-                    list = new ArrayList<Markup>();
+                    FinderCacheUtil.removeResult(FINDER_PATH_FIND_ALL,
+                        finderArgs);
+                } else {
+                    cacheResult(list);
+
+                    FinderCacheUtil.putResult(FINDER_PATH_FIND_ALL, finderArgs,
+                        list);
                 }
-
-                cacheResult(list);
-
-                FinderCacheUtil.putResult(FINDER_PATH_FIND_ALL, finderArgs, list);
 
                 closeSession(session);
             }
@@ -1919,18 +1914,18 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
                 finderArgs, this);
 
         if (count == null) {
+            StringBundler query = new StringBundler(2);
+
+            query.append(_SQL_COUNT_MARKUP_WHERE);
+
+            query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
+
+            String sql = query.toString();
+
             Session session = null;
 
             try {
                 session = openSession();
-
-                StringBundler query = new StringBundler(2);
-
-                query.append(_SQL_COUNT_MARKUP_WHERE);
-
-                query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
-
-                String sql = query.toString();
 
                 Query q = session.createQuery(sql);
 
@@ -1970,18 +1965,18 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
                 finderArgs, this);
 
         if (count == null) {
+            StringBundler query = new StringBundler(2);
+
+            query.append(_SQL_COUNT_MARKUP_WHERE);
+
+            query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
+
+            String sql = query.toString();
+
             Session session = null;
 
             try {
                 session = openSession();
-
-                StringBundler query = new StringBundler(2);
-
-                query.append(_SQL_COUNT_MARKUP_WHERE);
-
-                query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
-
-                String sql = query.toString();
 
                 Query q = session.createQuery(sql);
 
@@ -2023,20 +2018,20 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
                 finderArgs, this);
 
         if (count == null) {
+            StringBundler query = new StringBundler(3);
+
+            query.append(_SQL_COUNT_MARKUP_WHERE);
+
+            query.append(_FINDER_COLUMN_GROUPIDANDLOCATION_GROUPID_2);
+
+            query.append(_FINDER_COLUMN_GROUPIDANDLOCATION_LOCATION_2);
+
+            String sql = query.toString();
+
             Session session = null;
 
             try {
                 session = openSession();
-
-                StringBundler query = new StringBundler(3);
-
-                query.append(_SQL_COUNT_MARKUP_WHERE);
-
-                query.append(_FINDER_COLUMN_GROUPIDANDLOCATION_GROUPID_2);
-
-                query.append(_FINDER_COLUMN_GROUPIDANDLOCATION_LOCATION_2);
-
-                String sql = query.toString();
 
                 Query q = session.createQuery(sql);
 
@@ -2081,22 +2076,22 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
                 finderArgs, this);
 
         if (count == null) {
+            StringBundler query = new StringBundler(4);
+
+            query.append(_SQL_COUNT_MARKUP_WHERE);
+
+            query.append(_FINDER_COLUMN_GROUPIDSTATUSANDLOCATION_GROUPID_2);
+
+            query.append(_FINDER_COLUMN_GROUPIDSTATUSANDLOCATION_ACTIVE_2);
+
+            query.append(_FINDER_COLUMN_GROUPIDSTATUSANDLOCATION_LOCATION_2);
+
+            String sql = query.toString();
+
             Session session = null;
 
             try {
                 session = openSession();
-
-                StringBundler query = new StringBundler(4);
-
-                query.append(_SQL_COUNT_MARKUP_WHERE);
-
-                query.append(_FINDER_COLUMN_GROUPIDSTATUSANDLOCATION_GROUPID_2);
-
-                query.append(_FINDER_COLUMN_GROUPIDSTATUSANDLOCATION_ACTIVE_2);
-
-                query.append(_FINDER_COLUMN_GROUPIDSTATUSANDLOCATION_LOCATION_2);
-
-                String sql = query.toString();
 
                 Query q = session.createQuery(sql);
 
@@ -2186,5 +2181,11 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
                 _log.error(e);
             }
         }
+    }
+
+    public void destroy() {
+        EntityCacheUtil.removeCache(MarkupImpl.class.getName());
+        FinderCacheUtil.removeCache(FINDER_CLASS_NAME_ENTITY);
+        FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST);
     }
 }
