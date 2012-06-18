@@ -64,6 +64,8 @@ List<Markup> markups = (List<Markup>)renderRequest.getAttribute("markups");
 	<input type="button" name="addMarkup" value="<liferay-ui:message key="add-markup" />" onClick="self.location = '<%=addURL %>';">
 	<input type="submit" name="save" value="<liferay-ui:message key="save-changes" />" >
 	
+	<hr/>
+	
 	<%-- 
 		Define result list and count 
 	--%>
@@ -90,17 +92,11 @@ List<Markup> markups = (List<Markup>)renderRequest.getAttribute("markups");
 		<liferay-ui:search-container-column-text>
 			<liferay-ui:success key="<%=saveOkKey %>" message="save-ok" />	
 			<liferay-ui:error key="<%=tooLongKey %>" message="markup-too-long" />
-			<liferay-ui:input-textarea 
-				param="<%=\"markup_\" + markup.getId() %>" 
-				defaultValue="<%=HtmlUtil.escape(markup.getMarkup())%>"/>
-		</liferay-ui:search-container-column-text>
-
-
-		<%-- 
-			Second column contains fields to specify location, status and mark for deletion    
-		--%>
-		<liferay-ui:search-container-column-text>
-
+			<div>
+				<liferay-ui:input-textarea 
+					param="<%=\"markup_\" + markup.getId() %>" 
+					defaultValue="<%=HtmlUtil.escape(markup.getMarkup())%>"/>
+			</div>
 			<div>
 				<% String locationFieldName = "location_" + markup.getId(); %>
 				<label for="<portlet:namespace /><%=locationFieldName %>"><liferay-ui:message key="location" /></label>
@@ -108,18 +104,16 @@ List<Markup> markups = (List<Markup>)renderRequest.getAttribute("markups");
 					<option value="1" <%=markup.getLocation() == 1 ? "selected='selected'" : "" %> >TOP</option>
 					<option value="2" <%=markup.getLocation() == 2 ? "selected='selected'" : "" %> >BOTTOM</option>
 				</select>
-			</div>
-			<div>
+
 				<% String activeFieldName = "active_" + markup.getId(); %>
-				<label for="<portlet:namespace /><%=activeFieldName %>"><liferay-ui:message key="active" /></label>
+				<label style="margin-left: 50px;" for="<portlet:namespace /><%=activeFieldName %>"><liferay-ui:message key="active" /></label>
 				<liferay-ui:input-select  
 					param="<%=activeFieldName %>" 
 					defaultValue="<%=markup.isActive() %>" 
 					/>
-			</div>
-			<div>
+
 				<% String deleteFieldName = "delete_" + markup.getId(); %>
-				<label for="<portlet:namespace /><%=deleteFieldName %>Checkbox"><liferay-ui:message key="delete-on-save" /></label>
+				<label style="margin-left: 50px;" for="<portlet:namespace /><%=deleteFieldName %>Checkbox"><liferay-ui:message key="delete-on-save" /></label>
 				<liferay-ui:input-checkbox  
 					param="<%=deleteFieldName %>" 
 					/>
