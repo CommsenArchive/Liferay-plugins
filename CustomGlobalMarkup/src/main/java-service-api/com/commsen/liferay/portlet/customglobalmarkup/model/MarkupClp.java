@@ -1,6 +1,9 @@
 package com.commsen.liferay.portlet.customglobalmarkup.model;
 
+import com.commsen.liferay.portlet.customglobalmarkup.service.MarkupLocalServiceUtil;
+
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.impl.BaseModelImpl;
 
@@ -20,16 +23,28 @@ public class MarkupClp extends BaseModelImpl<Markup> implements Markup {
     public MarkupClp() {
     }
 
+    public Class<?> getModelClass() {
+        return Markup.class;
+    }
+
+    public String getModelClassName() {
+        return Markup.class.getName();
+    }
+
     public long getPrimaryKey() {
         return _id;
     }
 
-    public void setPrimaryKey(long pk) {
-        setId(pk);
+    public void setPrimaryKey(long primaryKey) {
+        setId(primaryKey);
     }
 
     public Serializable getPrimaryKeyObj() {
         return new Long(_id);
+    }
+
+    public void setPrimaryKeyObj(Serializable primaryKeyObj) {
+        setPrimaryKey(((Long) primaryKeyObj).longValue());
     }
 
     public long getId() {
@@ -84,15 +99,21 @@ public class MarkupClp extends BaseModelImpl<Markup> implements Markup {
         _location = location;
     }
 
-    public Markup toEscapedModel() {
-        if (isEscapedModel()) {
-            return this;
+    public void persist() throws SystemException {
+        if (this.isNew()) {
+            MarkupLocalServiceUtil.addMarkup(this);
         } else {
-            return (Markup) Proxy.newProxyInstance(Markup.class.getClassLoader(),
-                new Class[] { Markup.class }, new AutoEscapeBeanHandler(this));
+            MarkupLocalServiceUtil.updateMarkup(this);
         }
     }
 
+    @Override
+    public Markup toEscapedModel() {
+        return (Markup) Proxy.newProxyInstance(Markup.class.getClassLoader(),
+            new Class[] { Markup.class }, new AutoEscapeBeanHandler(this));
+    }
+
+    @Override
     public Object clone() {
         MarkupClp clone = new MarkupClp();
 
@@ -107,17 +128,18 @@ public class MarkupClp extends BaseModelImpl<Markup> implements Markup {
     }
 
     public int compareTo(Markup markup) {
-        long pk = markup.getPrimaryKey();
+        long primaryKey = markup.getPrimaryKey();
 
-        if (getPrimaryKey() < pk) {
+        if (getPrimaryKey() < primaryKey) {
             return -1;
-        } else if (getPrimaryKey() > pk) {
+        } else if (getPrimaryKey() > primaryKey) {
             return 1;
         } else {
             return 0;
         }
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -131,19 +153,21 @@ public class MarkupClp extends BaseModelImpl<Markup> implements Markup {
             return false;
         }
 
-        long pk = markup.getPrimaryKey();
+        long primaryKey = markup.getPrimaryKey();
 
-        if (getPrimaryKey() == pk) {
+        if (getPrimaryKey() == primaryKey) {
             return true;
         } else {
             return false;
         }
     }
 
+    @Override
     public int hashCode() {
         return (int) getPrimaryKey();
     }
 
+    @Override
     public String toString() {
         StringBundler sb = new StringBundler(13);
 

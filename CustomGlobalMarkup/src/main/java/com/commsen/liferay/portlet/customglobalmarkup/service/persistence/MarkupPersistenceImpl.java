@@ -7,7 +7,7 @@ import com.commsen.liferay.portlet.customglobalmarkup.model.impl.MarkupModelImpl
 import com.commsen.liferay.portlet.customglobalmarkup.service.persistence.MarkupPersistence;
 
 import com.liferay.portal.NoSuchModelException;
-import com.liferay.portal.kernel.annotation.BeanReference;
+import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -22,9 +22,12 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.ModelListener;
 import com.liferay.portal.service.persistence.BatchSessionUtil;
 import com.liferay.portal.service.persistence.ResourcePersistence;
@@ -41,10 +44,6 @@ import java.util.List;
  * The persistence implementation for the markup service.
  *
  * <p>
- * Never modify or reference this class directly. Always use {@link MarkupUtil} to access the markup persistence. Modify <code>service.xml</code> and rerun ServiceBuilder to regenerate this class.
- * </p>
- *
- * <p>
  * Caching information and settings can be found in <code>portal.properties</code>
  * </p>
  *
@@ -55,48 +54,82 @@ import java.util.List;
  */
 public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     implements MarkupPersistence {
+    /*
+     * NOTE FOR DEVELOPERS:
+     *
+     * Never modify or reference this class directly. Always use {@link MarkupUtil} to access the markup persistence. Modify <code>service.xml</code> and rerun ServiceBuilder to regenerate this class.
+     */
     public static final String FINDER_CLASS_NAME_ENTITY = MarkupImpl.class.getName();
-    public static final String FINDER_CLASS_NAME_LIST = FINDER_CLASS_NAME_ENTITY +
-        ".List";
-    public static final FinderPath FINDER_PATH_FIND_BY_GROUPID = new FinderPath(MarkupModelImpl.ENTITY_CACHE_ENABLED,
-            MarkupModelImpl.FINDER_CACHE_ENABLED, FINDER_CLASS_NAME_LIST,
-            "findByGroupId",
+    public static final String FINDER_CLASS_NAME_LIST_WITH_PAGINATION = FINDER_CLASS_NAME_ENTITY +
+        ".List1";
+    public static final String FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION = FINDER_CLASS_NAME_ENTITY +
+        ".List2";
+    public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_GROUPID = new FinderPath(MarkupModelImpl.ENTITY_CACHE_ENABLED,
+            MarkupModelImpl.FINDER_CACHE_ENABLED, MarkupImpl.class,
+            FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
             new String[] {
                 Long.class.getName(),
                 
             "java.lang.Integer", "java.lang.Integer",
                 "com.liferay.portal.kernel.util.OrderByComparator"
             });
+    public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID =
+        new FinderPath(MarkupModelImpl.ENTITY_CACHE_ENABLED,
+            MarkupModelImpl.FINDER_CACHE_ENABLED, MarkupImpl.class,
+            FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
+            new String[] { Long.class.getName() },
+            MarkupModelImpl.GROUPID_COLUMN_BITMASK);
     public static final FinderPath FINDER_PATH_COUNT_BY_GROUPID = new FinderPath(MarkupModelImpl.ENTITY_CACHE_ENABLED,
-            MarkupModelImpl.FINDER_CACHE_ENABLED, FINDER_CLASS_NAME_LIST,
-            "countByGroupId", new String[] { Long.class.getName() });
-    public static final FinderPath FINDER_PATH_FIND_BY_COMPANYID = new FinderPath(MarkupModelImpl.ENTITY_CACHE_ENABLED,
-            MarkupModelImpl.FINDER_CACHE_ENABLED, FINDER_CLASS_NAME_LIST,
-            "findByCompanyId",
+            MarkupModelImpl.FINDER_CACHE_ENABLED, Long.class,
+            FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
+            new String[] { Long.class.getName() });
+    public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_COMPANYID =
+        new FinderPath(MarkupModelImpl.ENTITY_CACHE_ENABLED,
+            MarkupModelImpl.FINDER_CACHE_ENABLED, MarkupImpl.class,
+            FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
             new String[] {
                 Long.class.getName(),
                 
             "java.lang.Integer", "java.lang.Integer",
                 "com.liferay.portal.kernel.util.OrderByComparator"
             });
+    public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID =
+        new FinderPath(MarkupModelImpl.ENTITY_CACHE_ENABLED,
+            MarkupModelImpl.FINDER_CACHE_ENABLED, MarkupImpl.class,
+            FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByCompanyId",
+            new String[] { Long.class.getName() },
+            MarkupModelImpl.COMPANYID_COLUMN_BITMASK);
     public static final FinderPath FINDER_PATH_COUNT_BY_COMPANYID = new FinderPath(MarkupModelImpl.ENTITY_CACHE_ENABLED,
-            MarkupModelImpl.FINDER_CACHE_ENABLED, FINDER_CLASS_NAME_LIST,
-            "countByCompanyId", new String[] { Long.class.getName() });
-    public static final FinderPath FINDER_PATH_FIND_BY_GROUPIDANDLOCATION = new FinderPath(MarkupModelImpl.ENTITY_CACHE_ENABLED,
-            MarkupModelImpl.FINDER_CACHE_ENABLED, FINDER_CLASS_NAME_LIST,
-            "findByGroupIdAndLocation",
+            MarkupModelImpl.FINDER_CACHE_ENABLED, Long.class,
+            FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByCompanyId",
+            new String[] { Long.class.getName() });
+    public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_GROUPIDANDLOCATION =
+        new FinderPath(MarkupModelImpl.ENTITY_CACHE_ENABLED,
+            MarkupModelImpl.FINDER_CACHE_ENABLED, MarkupImpl.class,
+            FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupIdAndLocation",
             new String[] {
                 Long.class.getName(), Short.class.getName(),
                 
             "java.lang.Integer", "java.lang.Integer",
                 "com.liferay.portal.kernel.util.OrderByComparator"
             });
+    public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPIDANDLOCATION =
+        new FinderPath(MarkupModelImpl.ENTITY_CACHE_ENABLED,
+            MarkupModelImpl.FINDER_CACHE_ENABLED, MarkupImpl.class,
+            FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+            "findByGroupIdAndLocation",
+            new String[] { Long.class.getName(), Short.class.getName() },
+            MarkupModelImpl.GROUPID_COLUMN_BITMASK |
+            MarkupModelImpl.LOCATION_COLUMN_BITMASK);
     public static final FinderPath FINDER_PATH_COUNT_BY_GROUPIDANDLOCATION = new FinderPath(MarkupModelImpl.ENTITY_CACHE_ENABLED,
-            MarkupModelImpl.FINDER_CACHE_ENABLED, FINDER_CLASS_NAME_LIST,
+            MarkupModelImpl.FINDER_CACHE_ENABLED, Long.class,
+            FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
             "countByGroupIdAndLocation",
             new String[] { Long.class.getName(), Short.class.getName() });
-    public static final FinderPath FINDER_PATH_FIND_BY_GROUPIDSTATUSANDLOCATION = new FinderPath(MarkupModelImpl.ENTITY_CACHE_ENABLED,
-            MarkupModelImpl.FINDER_CACHE_ENABLED, FINDER_CLASS_NAME_LIST,
+    public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_GROUPIDSTATUSANDLOCATION =
+        new FinderPath(MarkupModelImpl.ENTITY_CACHE_ENABLED,
+            MarkupModelImpl.FINDER_CACHE_ENABLED, MarkupImpl.class,
+            FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
             "findByGroupIdStatusAndLocation",
             new String[] {
                 Long.class.getName(), Boolean.class.getName(),
@@ -105,20 +138,36 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
             "java.lang.Integer", "java.lang.Integer",
                 "com.liferay.portal.kernel.util.OrderByComparator"
             });
+    public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPIDSTATUSANDLOCATION =
+        new FinderPath(MarkupModelImpl.ENTITY_CACHE_ENABLED,
+            MarkupModelImpl.FINDER_CACHE_ENABLED, MarkupImpl.class,
+            FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+            "findByGroupIdStatusAndLocation",
+            new String[] {
+                Long.class.getName(), Boolean.class.getName(),
+                Short.class.getName()
+            },
+            MarkupModelImpl.GROUPID_COLUMN_BITMASK |
+            MarkupModelImpl.ACTIVE_COLUMN_BITMASK |
+            MarkupModelImpl.LOCATION_COLUMN_BITMASK);
     public static final FinderPath FINDER_PATH_COUNT_BY_GROUPIDSTATUSANDLOCATION =
         new FinderPath(MarkupModelImpl.ENTITY_CACHE_ENABLED,
-            MarkupModelImpl.FINDER_CACHE_ENABLED, FINDER_CLASS_NAME_LIST,
+            MarkupModelImpl.FINDER_CACHE_ENABLED, Long.class,
+            FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
             "countByGroupIdStatusAndLocation",
             new String[] {
                 Long.class.getName(), Boolean.class.getName(),
                 Short.class.getName()
             });
-    public static final FinderPath FINDER_PATH_FIND_ALL = new FinderPath(MarkupModelImpl.ENTITY_CACHE_ENABLED,
-            MarkupModelImpl.FINDER_CACHE_ENABLED, FINDER_CLASS_NAME_LIST,
-            "findAll", new String[0]);
+    public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_ALL = new FinderPath(MarkupModelImpl.ENTITY_CACHE_ENABLED,
+            MarkupModelImpl.FINDER_CACHE_ENABLED, MarkupImpl.class,
+            FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findAll", new String[0]);
+    public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL = new FinderPath(MarkupModelImpl.ENTITY_CACHE_ENABLED,
+            MarkupModelImpl.FINDER_CACHE_ENABLED, MarkupImpl.class,
+            FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findAll", new String[0]);
     public static final FinderPath FINDER_PATH_COUNT_ALL = new FinderPath(MarkupModelImpl.ENTITY_CACHE_ENABLED,
-            MarkupModelImpl.FINDER_CACHE_ENABLED, FINDER_CLASS_NAME_LIST,
-            "countAll", new String[0]);
+            MarkupModelImpl.FINDER_CACHE_ENABLED, Long.class,
+            FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countAll", new String[0]);
     private static final String _SQL_SELECT_MARKUP = "SELECT markup FROM Markup markup";
     private static final String _SQL_SELECT_MARKUP_WHERE = "SELECT markup FROM Markup markup WHERE ";
     private static final String _SQL_COUNT_MARKUP = "SELECT COUNT(markup) FROM Markup markup";
@@ -136,7 +185,27 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     private static final String _ORDER_BY_ENTITY_ALIAS = "markup.";
     private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No Markup exists with the primary key ";
     private static final String _NO_SUCH_ENTITY_WITH_KEY = "No Markup exists with the key {";
+    private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
+                PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
     private static Log _log = LogFactoryUtil.getLog(MarkupPersistenceImpl.class);
+    private static Markup _nullMarkup = new MarkupImpl() {
+            @Override
+            public Object clone() {
+                return this;
+            }
+
+            @Override
+            public CacheModel<Markup> toCacheModel() {
+                return _nullMarkupCacheModel;
+            }
+        };
+
+    private static CacheModel<Markup> _nullMarkupCacheModel = new CacheModel<Markup>() {
+            public Markup toEntityModel() {
+                return _nullMarkup;
+            }
+        };
+
     @BeanReference(type = MarkupPersistence.class)
     protected MarkupPersistence markupPersistence;
     @BeanReference(type = ResourcePersistence.class)
@@ -147,24 +216,28 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     /**
      * Caches the markup in the entity cache if it is enabled.
      *
-     * @param markup the markup to cache
+     * @param markup the markup
      */
     public void cacheResult(Markup markup) {
         EntityCacheUtil.putResult(MarkupModelImpl.ENTITY_CACHE_ENABLED,
             MarkupImpl.class, markup.getPrimaryKey(), markup);
+
+        markup.resetOriginalValues();
     }
 
     /**
      * Caches the markups in the entity cache if it is enabled.
      *
-     * @param markups the markups to cache
+     * @param markups the markups
      */
     public void cacheResult(List<Markup> markups) {
         for (Markup markup : markups) {
             if (EntityCacheUtil.getResult(
                         MarkupModelImpl.ENTITY_CACHE_ENABLED, MarkupImpl.class,
-                        markup.getPrimaryKey(), this) == null) {
+                        markup.getPrimaryKey()) == null) {
                 cacheResult(markup);
+            } else {
+                markup.resetOriginalValues();
             }
         }
     }
@@ -176,11 +249,17 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
      * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
      * </p>
      */
+    @Override
     public void clearCache() {
-        CacheRegistryUtil.clear(MarkupImpl.class.getName());
+        if (_HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE) {
+            CacheRegistryUtil.clear(MarkupImpl.class.getName());
+        }
+
         EntityCacheUtil.clearCache(MarkupImpl.class.getName());
+
         FinderCacheUtil.clearCache(FINDER_CLASS_NAME_ENTITY);
-        FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST);
+        FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+        FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
     }
 
     /**
@@ -190,9 +269,24 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
      * The {@link com.liferay.portal.kernel.dao.orm.EntityCache} and {@link com.liferay.portal.kernel.dao.orm.FinderCache} are both cleared by this method.
      * </p>
      */
+    @Override
     public void clearCache(Markup markup) {
         EntityCacheUtil.removeResult(MarkupModelImpl.ENTITY_CACHE_ENABLED,
             MarkupImpl.class, markup.getPrimaryKey());
+
+        FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+        FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+    }
+
+    @Override
+    public void clearCache(List<Markup> markups) {
+        FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+        FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+
+        for (Markup markup : markups) {
+            EntityCacheUtil.removeResult(MarkupModelImpl.ENTITY_CACHE_ENABLED,
+                MarkupImpl.class, markup.getPrimaryKey());
+        }
     }
 
     /**
@@ -213,39 +307,40 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     /**
      * Removes the markup with the primary key from the database. Also notifies the appropriate model listeners.
      *
-     * @param primaryKey the primary key of the markup to remove
-     * @return the markup that was removed
-     * @throws com.liferay.portal.NoSuchModelException if a markup with the primary key could not be found
-     * @throws SystemException if a system exception occurred
-     */
-    public Markup remove(Serializable primaryKey)
-        throws NoSuchModelException, SystemException {
-        return remove(((Long) primaryKey).longValue());
-    }
-
-    /**
-     * Removes the markup with the primary key from the database. Also notifies the appropriate model listeners.
-     *
-     * @param id the primary key of the markup to remove
+     * @param id the primary key of the markup
      * @return the markup that was removed
      * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a markup with the primary key could not be found
      * @throws SystemException if a system exception occurred
      */
     public Markup remove(long id) throws NoSuchMarkupException, SystemException {
+        return remove(Long.valueOf(id));
+    }
+
+    /**
+     * Removes the markup with the primary key from the database. Also notifies the appropriate model listeners.
+     *
+     * @param primaryKey the primary key of the markup
+     * @return the markup that was removed
+     * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a markup with the primary key could not be found
+     * @throws SystemException if a system exception occurred
+     */
+    @Override
+    public Markup remove(Serializable primaryKey)
+        throws NoSuchMarkupException, SystemException {
         Session session = null;
 
         try {
             session = openSession();
 
-            Markup markup = (Markup) session.get(MarkupImpl.class, new Long(id));
+            Markup markup = (Markup) session.get(MarkupImpl.class, primaryKey);
 
             if (markup == null) {
                 if (_log.isWarnEnabled()) {
-                    _log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + id);
+                    _log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
                 }
 
                 throw new NoSuchMarkupException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-                    id);
+                    primaryKey);
             }
 
             return remove(markup);
@@ -258,6 +353,7 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
         }
     }
 
+    @Override
     protected Markup removeImpl(Markup markup) throws SystemException {
         markup = toUnwrappedModel(markup);
 
@@ -273,18 +369,20 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
             closeSession(session);
         }
 
-        FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST);
-
-        EntityCacheUtil.removeResult(MarkupModelImpl.ENTITY_CACHE_ENABLED,
-            MarkupImpl.class, markup.getPrimaryKey());
+        clearCache(markup);
 
         return markup;
     }
 
+    @Override
     public Markup updateImpl(
         com.commsen.liferay.portlet.customglobalmarkup.model.Markup markup,
         boolean merge) throws SystemException {
         markup = toUnwrappedModel(markup);
+
+        boolean isNew = markup.isNew();
+
+        MarkupModelImpl markupModelImpl = (MarkupModelImpl) markup;
 
         Session session = null;
 
@@ -300,7 +398,96 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
             closeSession(session);
         }
 
-        FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST);
+        FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+
+        if (isNew || !MarkupModelImpl.COLUMN_BITMASK_ENABLED) {
+            FinderCacheUtil.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+        }
+        else {
+            if ((markupModelImpl.getColumnBitmask() &
+                    FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID.getColumnBitmask()) != 0) {
+                Object[] args = new Object[] {
+                        Long.valueOf(markupModelImpl.getOriginalGroupId())
+                    };
+
+                FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_GROUPID, args);
+                FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID,
+                    args);
+
+                args = new Object[] { Long.valueOf(markupModelImpl.getGroupId()) };
+
+                FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_GROUPID, args);
+                FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID,
+                    args);
+            }
+
+            if ((markupModelImpl.getColumnBitmask() &
+                    FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID.getColumnBitmask()) != 0) {
+                Object[] args = new Object[] {
+                        Long.valueOf(markupModelImpl.getOriginalCompanyId())
+                    };
+
+                FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_COMPANYID,
+                    args);
+                FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID,
+                    args);
+
+                args = new Object[] { Long.valueOf(markupModelImpl.getCompanyId()) };
+
+                FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_COMPANYID,
+                    args);
+                FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID,
+                    args);
+            }
+
+            if ((markupModelImpl.getColumnBitmask() &
+                    FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPIDANDLOCATION.getColumnBitmask()) != 0) {
+                Object[] args = new Object[] {
+                        Long.valueOf(markupModelImpl.getOriginalGroupId()),
+                        Short.valueOf(markupModelImpl.getOriginalLocation())
+                    };
+
+                FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_GROUPIDANDLOCATION,
+                    args);
+                FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPIDANDLOCATION,
+                    args);
+
+                args = new Object[] {
+                        Long.valueOf(markupModelImpl.getGroupId()),
+                        Short.valueOf(markupModelImpl.getLocation())
+                    };
+
+                FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_GROUPIDANDLOCATION,
+                    args);
+                FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPIDANDLOCATION,
+                    args);
+            }
+
+            if ((markupModelImpl.getColumnBitmask() &
+                    FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPIDSTATUSANDLOCATION.getColumnBitmask()) != 0) {
+                Object[] args = new Object[] {
+                        Long.valueOf(markupModelImpl.getOriginalGroupId()),
+                        Boolean.valueOf(markupModelImpl.getOriginalActive()),
+                        Short.valueOf(markupModelImpl.getOriginalLocation())
+                    };
+
+                FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_GROUPIDSTATUSANDLOCATION,
+                    args);
+                FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPIDSTATUSANDLOCATION,
+                    args);
+
+                args = new Object[] {
+                        Long.valueOf(markupModelImpl.getGroupId()),
+                        Boolean.valueOf(markupModelImpl.getActive()),
+                        Short.valueOf(markupModelImpl.getLocation())
+                    };
+
+                FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_GROUPIDSTATUSANDLOCATION,
+                    args);
+                FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPIDSTATUSANDLOCATION,
+                    args);
+            }
+        }
 
         EntityCacheUtil.putResult(MarkupModelImpl.ENTITY_CACHE_ENABLED,
             MarkupImpl.class, markup.getPrimaryKey(), markup);
@@ -329,22 +516,23 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds the markup with the primary key or throws a {@link com.liferay.portal.NoSuchModelException} if it could not be found.
+     * Returns the markup with the primary key or throws a {@link com.liferay.portal.NoSuchModelException} if it could not be found.
      *
-     * @param primaryKey the primary key of the markup to find
+     * @param primaryKey the primary key of the markup
      * @return the markup
      * @throws com.liferay.portal.NoSuchModelException if a markup with the primary key could not be found
      * @throws SystemException if a system exception occurred
      */
+    @Override
     public Markup findByPrimaryKey(Serializable primaryKey)
         throws NoSuchModelException, SystemException {
         return findByPrimaryKey(((Long) primaryKey).longValue());
     }
 
     /**
-     * Finds the markup with the primary key or throws a {@link com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException} if it could not be found.
+     * Returns the markup with the primary key or throws a {@link com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException} if it could not be found.
      *
-     * @param id the primary key of the markup to find
+     * @param id the primary key of the markup
      * @return the markup
      * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a markup with the primary key could not be found
      * @throws SystemException if a system exception occurred
@@ -366,40 +554,52 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds the markup with the primary key or returns <code>null</code> if it could not be found.
+     * Returns the markup with the primary key or returns <code>null</code> if it could not be found.
      *
-     * @param primaryKey the primary key of the markup to find
+     * @param primaryKey the primary key of the markup
      * @return the markup, or <code>null</code> if a markup with the primary key could not be found
      * @throws SystemException if a system exception occurred
      */
+    @Override
     public Markup fetchByPrimaryKey(Serializable primaryKey)
         throws SystemException {
         return fetchByPrimaryKey(((Long) primaryKey).longValue());
     }
 
     /**
-     * Finds the markup with the primary key or returns <code>null</code> if it could not be found.
+     * Returns the markup with the primary key or returns <code>null</code> if it could not be found.
      *
-     * @param id the primary key of the markup to find
+     * @param id the primary key of the markup
      * @return the markup, or <code>null</code> if a markup with the primary key could not be found
      * @throws SystemException if a system exception occurred
      */
     public Markup fetchByPrimaryKey(long id) throws SystemException {
         Markup markup = (Markup) EntityCacheUtil.getResult(MarkupModelImpl.ENTITY_CACHE_ENABLED,
-                MarkupImpl.class, id, this);
+                MarkupImpl.class, id);
+
+        if (markup == _nullMarkup) {
+            return null;
+        }
 
         if (markup == null) {
             Session session = null;
 
+            boolean hasException = false;
+
             try {
                 session = openSession();
 
-                markup = (Markup) session.get(MarkupImpl.class, new Long(id));
+                markup = (Markup) session.get(MarkupImpl.class, Long.valueOf(id));
             } catch (Exception e) {
+                hasException = true;
+
                 throw processException(e);
             } finally {
                 if (markup != null) {
                     cacheResult(markup);
+                } else if (!hasException) {
+                    EntityCacheUtil.putResult(MarkupModelImpl.ENTITY_CACHE_ENABLED,
+                        MarkupImpl.class, id, _nullMarkup);
                 }
 
                 closeSession(session);
@@ -410,9 +610,9 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds all the markups where groupId = &#63;.
+     * Returns all the markups where groupId = &#63;.
      *
-     * @param groupId the group id to search with
+     * @param groupId the group ID
      * @return the matching markups
      * @throws SystemException if a system exception occurred
      */
@@ -421,15 +621,15 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds a range of all the markups where groupId = &#63;.
+     * Returns a range of all the markups where groupId = &#63;.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
-     * @param groupId the group id to search with
-     * @param start the lower bound of the range of markups to return
-     * @param end the upper bound of the range of markups to return (not inclusive)
+     * @param groupId the group ID
+     * @param start the lower bound of the range of markups
+     * @param end the upper bound of the range of markups (not inclusive)
      * @return the range of matching markups
      * @throws SystemException if a system exception occurred
      */
@@ -439,29 +639,34 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds an ordered range of all the markups where groupId = &#63;.
+     * Returns an ordered range of all the markups where groupId = &#63;.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
-     * @param groupId the group id to search with
-     * @param start the lower bound of the range of markups to return
-     * @param end the upper bound of the range of markups to return (not inclusive)
-     * @param orderByComparator the comparator to order the results by
+     * @param groupId the group ID
+     * @param start the lower bound of the range of markups
+     * @param end the upper bound of the range of markups (not inclusive)
+     * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
      * @return the ordered range of matching markups
      * @throws SystemException if a system exception occurred
      */
     public List<Markup> findByGroupId(long groupId, int start, int end,
         OrderByComparator orderByComparator) throws SystemException {
-        Object[] finderArgs = new Object[] {
-                groupId,
-                
-                String.valueOf(start), String.valueOf(end),
-                String.valueOf(orderByComparator)
-            };
+        FinderPath finderPath = null;
+        Object[] finderArgs = null;
 
-        List<Markup> list = (List<Markup>) FinderCacheUtil.getResult(FINDER_PATH_FIND_BY_GROUPID,
+        if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+                (orderByComparator == null)) {
+            finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID;
+            finderArgs = new Object[] { groupId };
+        } else {
+            finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_GROUPID;
+            finderArgs = new Object[] { groupId, start, end, orderByComparator };
+        }
+
+        List<Markup> list = (List<Markup>) FinderCacheUtil.getResult(finderPath,
                 finderArgs, this);
 
         if (list == null) {
@@ -501,13 +706,11 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
                 throw processException(e);
             } finally {
                 if (list == null) {
-                    FinderCacheUtil.removeResult(FINDER_PATH_FIND_BY_GROUPID,
-                        finderArgs);
+                    FinderCacheUtil.removeResult(finderPath, finderArgs);
                 } else {
                     cacheResult(list);
 
-                    FinderCacheUtil.putResult(FINDER_PATH_FIND_BY_GROUPID,
-                        finderArgs, list);
+                    FinderCacheUtil.putResult(finderPath, finderArgs, list);
                 }
 
                 closeSession(session);
@@ -518,14 +721,14 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds the first markup in the ordered set where groupId = &#63;.
+     * Returns the first markup in the ordered set where groupId = &#63;.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
-     * @param groupId the group id to search with
-     * @param orderByComparator the comparator to order the set by
+     * @param groupId the group ID
+     * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
      * @return the first matching markup
      * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a matching markup could not be found
      * @throws SystemException if a system exception occurred
@@ -552,14 +755,14 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds the last markup in the ordered set where groupId = &#63;.
+     * Returns the last markup in the ordered set where groupId = &#63;.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
-     * @param groupId the group id to search with
-     * @param orderByComparator the comparator to order the set by
+     * @param groupId the group ID
+     * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
      * @return the last matching markup
      * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a matching markup could not be found
      * @throws SystemException if a system exception occurred
@@ -589,15 +792,15 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds the markups before and after the current markup in the ordered set where groupId = &#63;.
+     * Returns the markups before and after the current markup in the ordered set where groupId = &#63;.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
      * @param id the primary key of the current markup
-     * @param groupId the group id to search with
-     * @param orderByComparator the comparator to order the set by
+     * @param groupId the group ID
+     * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
      * @return the previous, current, and next markup
      * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a markup with the primary key could not be found
      * @throws SystemException if a system exception occurred
@@ -646,17 +849,17 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
         query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
         if (orderByComparator != null) {
-            String[] orderByFields = orderByComparator.getOrderByFields();
+            String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
 
-            if (orderByFields.length > 0) {
+            if (orderByConditionFields.length > 0) {
                 query.append(WHERE_AND);
             }
 
-            for (int i = 0; i < orderByFields.length; i++) {
+            for (int i = 0; i < orderByConditionFields.length; i++) {
                 query.append(_ORDER_BY_ENTITY_ALIAS);
-                query.append(orderByFields[i]);
+                query.append(orderByConditionFields[i]);
 
-                if ((i + 1) < orderByFields.length) {
+                if ((i + 1) < orderByConditionFields.length) {
                     if (orderByComparator.isAscending() ^ previous) {
                         query.append(WHERE_GREATER_THAN_HAS_NEXT);
                     } else {
@@ -672,6 +875,8 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
             }
 
             query.append(ORDER_BY_CLAUSE);
+
+            String[] orderByFields = orderByComparator.getOrderByFields();
 
             for (int i = 0; i < orderByFields.length; i++) {
                 query.append(_ORDER_BY_ENTITY_ALIAS);
@@ -705,7 +910,7 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
         qPos.add(groupId);
 
         if (orderByComparator != null) {
-            Object[] values = orderByComparator.getOrderByValues(markup);
+            Object[] values = orderByComparator.getOrderByConditionValues(markup);
 
             for (Object value : values) {
                 qPos.add(value);
@@ -722,9 +927,9 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds all the markups where companyId = &#63;.
+     * Returns all the markups where companyId = &#63;.
      *
-     * @param companyId the company id to search with
+     * @param companyId the company ID
      * @return the matching markups
      * @throws SystemException if a system exception occurred
      */
@@ -735,15 +940,15 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds a range of all the markups where companyId = &#63;.
+     * Returns a range of all the markups where companyId = &#63;.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
-     * @param companyId the company id to search with
-     * @param start the lower bound of the range of markups to return
-     * @param end the upper bound of the range of markups to return (not inclusive)
+     * @param companyId the company ID
+     * @param start the lower bound of the range of markups
+     * @param end the upper bound of the range of markups (not inclusive)
      * @return the range of matching markups
      * @throws SystemException if a system exception occurred
      */
@@ -753,29 +958,34 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds an ordered range of all the markups where companyId = &#63;.
+     * Returns an ordered range of all the markups where companyId = &#63;.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
-     * @param companyId the company id to search with
-     * @param start the lower bound of the range of markups to return
-     * @param end the upper bound of the range of markups to return (not inclusive)
-     * @param orderByComparator the comparator to order the results by
+     * @param companyId the company ID
+     * @param start the lower bound of the range of markups
+     * @param end the upper bound of the range of markups (not inclusive)
+     * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
      * @return the ordered range of matching markups
      * @throws SystemException if a system exception occurred
      */
     public List<Markup> findByCompanyId(long companyId, int start, int end,
         OrderByComparator orderByComparator) throws SystemException {
-        Object[] finderArgs = new Object[] {
-                companyId,
-                
-                String.valueOf(start), String.valueOf(end),
-                String.valueOf(orderByComparator)
-            };
+        FinderPath finderPath = null;
+        Object[] finderArgs = null;
 
-        List<Markup> list = (List<Markup>) FinderCacheUtil.getResult(FINDER_PATH_FIND_BY_COMPANYID,
+        if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+                (orderByComparator == null)) {
+            finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID;
+            finderArgs = new Object[] { companyId };
+        } else {
+            finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_COMPANYID;
+            finderArgs = new Object[] { companyId, start, end, orderByComparator };
+        }
+
+        List<Markup> list = (List<Markup>) FinderCacheUtil.getResult(finderPath,
                 finderArgs, this);
 
         if (list == null) {
@@ -815,13 +1025,11 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
                 throw processException(e);
             } finally {
                 if (list == null) {
-                    FinderCacheUtil.removeResult(FINDER_PATH_FIND_BY_COMPANYID,
-                        finderArgs);
+                    FinderCacheUtil.removeResult(finderPath, finderArgs);
                 } else {
                     cacheResult(list);
 
-                    FinderCacheUtil.putResult(FINDER_PATH_FIND_BY_COMPANYID,
-                        finderArgs, list);
+                    FinderCacheUtil.putResult(finderPath, finderArgs, list);
                 }
 
                 closeSession(session);
@@ -832,14 +1040,14 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds the first markup in the ordered set where companyId = &#63;.
+     * Returns the first markup in the ordered set where companyId = &#63;.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
-     * @param companyId the company id to search with
-     * @param orderByComparator the comparator to order the set by
+     * @param companyId the company ID
+     * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
      * @return the first matching markup
      * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a matching markup could not be found
      * @throws SystemException if a system exception occurred
@@ -866,14 +1074,14 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds the last markup in the ordered set where companyId = &#63;.
+     * Returns the last markup in the ordered set where companyId = &#63;.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
-     * @param companyId the company id to search with
-     * @param orderByComparator the comparator to order the set by
+     * @param companyId the company ID
+     * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
      * @return the last matching markup
      * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a matching markup could not be found
      * @throws SystemException if a system exception occurred
@@ -903,15 +1111,15 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds the markups before and after the current markup in the ordered set where companyId = &#63;.
+     * Returns the markups before and after the current markup in the ordered set where companyId = &#63;.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
      * @param id the primary key of the current markup
-     * @param companyId the company id to search with
-     * @param orderByComparator the comparator to order the set by
+     * @param companyId the company ID
+     * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
      * @return the previous, current, and next markup
      * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a markup with the primary key could not be found
      * @throws SystemException if a system exception occurred
@@ -960,17 +1168,17 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
         query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
         if (orderByComparator != null) {
-            String[] orderByFields = orderByComparator.getOrderByFields();
+            String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
 
-            if (orderByFields.length > 0) {
+            if (orderByConditionFields.length > 0) {
                 query.append(WHERE_AND);
             }
 
-            for (int i = 0; i < orderByFields.length; i++) {
+            for (int i = 0; i < orderByConditionFields.length; i++) {
                 query.append(_ORDER_BY_ENTITY_ALIAS);
-                query.append(orderByFields[i]);
+                query.append(orderByConditionFields[i]);
 
-                if ((i + 1) < orderByFields.length) {
+                if ((i + 1) < orderByConditionFields.length) {
                     if (orderByComparator.isAscending() ^ previous) {
                         query.append(WHERE_GREATER_THAN_HAS_NEXT);
                     } else {
@@ -986,6 +1194,8 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
             }
 
             query.append(ORDER_BY_CLAUSE);
+
+            String[] orderByFields = orderByComparator.getOrderByFields();
 
             for (int i = 0; i < orderByFields.length; i++) {
                 query.append(_ORDER_BY_ENTITY_ALIAS);
@@ -1019,7 +1229,7 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
         qPos.add(companyId);
 
         if (orderByComparator != null) {
-            Object[] values = orderByComparator.getOrderByValues(markup);
+            Object[] values = orderByComparator.getOrderByConditionValues(markup);
 
             for (Object value : values) {
                 qPos.add(value);
@@ -1036,10 +1246,10 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds all the markups where groupId = &#63; and location = &#63;.
+     * Returns all the markups where groupId = &#63; and location = &#63;.
      *
-     * @param groupId the group id to search with
-     * @param location the location to search with
+     * @param groupId the group ID
+     * @param location the location
      * @return the matching markups
      * @throws SystemException if a system exception occurred
      */
@@ -1050,16 +1260,16 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds a range of all the markups where groupId = &#63; and location = &#63;.
+     * Returns a range of all the markups where groupId = &#63; and location = &#63;.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
-     * @param groupId the group id to search with
-     * @param location the location to search with
-     * @param start the lower bound of the range of markups to return
-     * @param end the upper bound of the range of markups to return (not inclusive)
+     * @param groupId the group ID
+     * @param location the location
+     * @param start the lower bound of the range of markups
+     * @param end the upper bound of the range of markups (not inclusive)
      * @return the range of matching markups
      * @throws SystemException if a system exception occurred
      */
@@ -1069,31 +1279,40 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds an ordered range of all the markups where groupId = &#63; and location = &#63;.
+     * Returns an ordered range of all the markups where groupId = &#63; and location = &#63;.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
-     * @param groupId the group id to search with
-     * @param location the location to search with
-     * @param start the lower bound of the range of markups to return
-     * @param end the upper bound of the range of markups to return (not inclusive)
-     * @param orderByComparator the comparator to order the results by
+     * @param groupId the group ID
+     * @param location the location
+     * @param start the lower bound of the range of markups
+     * @param end the upper bound of the range of markups (not inclusive)
+     * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
      * @return the ordered range of matching markups
      * @throws SystemException if a system exception occurred
      */
     public List<Markup> findByGroupIdAndLocation(long groupId, short location,
         int start, int end, OrderByComparator orderByComparator)
         throws SystemException {
-        Object[] finderArgs = new Object[] {
-                groupId, location,
-                
-                String.valueOf(start), String.valueOf(end),
-                String.valueOf(orderByComparator)
-            };
+        FinderPath finderPath = null;
+        Object[] finderArgs = null;
 
-        List<Markup> list = (List<Markup>) FinderCacheUtil.getResult(FINDER_PATH_FIND_BY_GROUPIDANDLOCATION,
+        if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+                (orderByComparator == null)) {
+            finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPIDANDLOCATION;
+            finderArgs = new Object[] { groupId, location };
+        } else {
+            finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_GROUPIDANDLOCATION;
+            finderArgs = new Object[] {
+                    groupId, location,
+                    
+                    start, end, orderByComparator
+                };
+        }
+
+        List<Markup> list = (List<Markup>) FinderCacheUtil.getResult(finderPath,
                 finderArgs, this);
 
         if (list == null) {
@@ -1137,13 +1356,11 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
                 throw processException(e);
             } finally {
                 if (list == null) {
-                    FinderCacheUtil.removeResult(FINDER_PATH_FIND_BY_GROUPIDANDLOCATION,
-                        finderArgs);
+                    FinderCacheUtil.removeResult(finderPath, finderArgs);
                 } else {
                     cacheResult(list);
 
-                    FinderCacheUtil.putResult(FINDER_PATH_FIND_BY_GROUPIDANDLOCATION,
-                        finderArgs, list);
+                    FinderCacheUtil.putResult(finderPath, finderArgs, list);
                 }
 
                 closeSession(session);
@@ -1154,15 +1371,15 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds the first markup in the ordered set where groupId = &#63; and location = &#63;.
+     * Returns the first markup in the ordered set where groupId = &#63; and location = &#63;.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
-     * @param groupId the group id to search with
-     * @param location the location to search with
-     * @param orderByComparator the comparator to order the set by
+     * @param groupId the group ID
+     * @param location the location
+     * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
      * @return the first matching markup
      * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a matching markup could not be found
      * @throws SystemException if a system exception occurred
@@ -1193,15 +1410,15 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds the last markup in the ordered set where groupId = &#63; and location = &#63;.
+     * Returns the last markup in the ordered set where groupId = &#63; and location = &#63;.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
-     * @param groupId the group id to search with
-     * @param location the location to search with
-     * @param orderByComparator the comparator to order the set by
+     * @param groupId the group ID
+     * @param location the location
+     * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
      * @return the last matching markup
      * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a matching markup could not be found
      * @throws SystemException if a system exception occurred
@@ -1234,16 +1451,16 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds the markups before and after the current markup in the ordered set where groupId = &#63; and location = &#63;.
+     * Returns the markups before and after the current markup in the ordered set where groupId = &#63; and location = &#63;.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
      * @param id the primary key of the current markup
-     * @param groupId the group id to search with
-     * @param location the location to search with
-     * @param orderByComparator the comparator to order the set by
+     * @param groupId the group ID
+     * @param location the location
+     * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
      * @return the previous, current, and next markup
      * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a markup with the primary key could not be found
      * @throws SystemException if a system exception occurred
@@ -1295,17 +1512,17 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
         query.append(_FINDER_COLUMN_GROUPIDANDLOCATION_LOCATION_2);
 
         if (orderByComparator != null) {
-            String[] orderByFields = orderByComparator.getOrderByFields();
+            String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
 
-            if (orderByFields.length > 0) {
+            if (orderByConditionFields.length > 0) {
                 query.append(WHERE_AND);
             }
 
-            for (int i = 0; i < orderByFields.length; i++) {
+            for (int i = 0; i < orderByConditionFields.length; i++) {
                 query.append(_ORDER_BY_ENTITY_ALIAS);
-                query.append(orderByFields[i]);
+                query.append(orderByConditionFields[i]);
 
-                if ((i + 1) < orderByFields.length) {
+                if ((i + 1) < orderByConditionFields.length) {
                     if (orderByComparator.isAscending() ^ previous) {
                         query.append(WHERE_GREATER_THAN_HAS_NEXT);
                     } else {
@@ -1321,6 +1538,8 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
             }
 
             query.append(ORDER_BY_CLAUSE);
+
+            String[] orderByFields = orderByComparator.getOrderByFields();
 
             for (int i = 0; i < orderByFields.length; i++) {
                 query.append(_ORDER_BY_ENTITY_ALIAS);
@@ -1356,7 +1575,7 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
         qPos.add(location);
 
         if (orderByComparator != null) {
-            Object[] values = orderByComparator.getOrderByValues(markup);
+            Object[] values = orderByComparator.getOrderByConditionValues(markup);
 
             for (Object value : values) {
                 qPos.add(value);
@@ -1373,11 +1592,11 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds all the markups where groupId = &#63; and active = &#63; and location = &#63;.
+     * Returns all the markups where groupId = &#63; and active = &#63; and location = &#63;.
      *
-     * @param groupId the group id to search with
-     * @param active the active to search with
-     * @param location the location to search with
+     * @param groupId the group ID
+     * @param active the active
+     * @param location the location
      * @return the matching markups
      * @throws SystemException if a system exception occurred
      */
@@ -1388,17 +1607,17 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds a range of all the markups where groupId = &#63; and active = &#63; and location = &#63;.
+     * Returns a range of all the markups where groupId = &#63; and active = &#63; and location = &#63;.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
-     * @param groupId the group id to search with
-     * @param active the active to search with
-     * @param location the location to search with
-     * @param start the lower bound of the range of markups to return
-     * @param end the upper bound of the range of markups to return (not inclusive)
+     * @param groupId the group ID
+     * @param active the active
+     * @param location the location
+     * @param start the lower bound of the range of markups
+     * @param end the upper bound of the range of markups (not inclusive)
      * @return the range of matching markups
      * @throws SystemException if a system exception occurred
      */
@@ -1410,32 +1629,41 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds an ordered range of all the markups where groupId = &#63; and active = &#63; and location = &#63;.
+     * Returns an ordered range of all the markups where groupId = &#63; and active = &#63; and location = &#63;.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
-     * @param groupId the group id to search with
-     * @param active the active to search with
-     * @param location the location to search with
-     * @param start the lower bound of the range of markups to return
-     * @param end the upper bound of the range of markups to return (not inclusive)
-     * @param orderByComparator the comparator to order the results by
+     * @param groupId the group ID
+     * @param active the active
+     * @param location the location
+     * @param start the lower bound of the range of markups
+     * @param end the upper bound of the range of markups (not inclusive)
+     * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
      * @return the ordered range of matching markups
      * @throws SystemException if a system exception occurred
      */
     public List<Markup> findByGroupIdStatusAndLocation(long groupId,
         boolean active, short location, int start, int end,
         OrderByComparator orderByComparator) throws SystemException {
-        Object[] finderArgs = new Object[] {
-                groupId, active, location,
-                
-                String.valueOf(start), String.valueOf(end),
-                String.valueOf(orderByComparator)
-            };
+        FinderPath finderPath = null;
+        Object[] finderArgs = null;
 
-        List<Markup> list = (List<Markup>) FinderCacheUtil.getResult(FINDER_PATH_FIND_BY_GROUPIDSTATUSANDLOCATION,
+        if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+                (orderByComparator == null)) {
+            finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPIDSTATUSANDLOCATION;
+            finderArgs = new Object[] { groupId, active, location };
+        } else {
+            finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_GROUPIDSTATUSANDLOCATION;
+            finderArgs = new Object[] {
+                    groupId, active, location,
+                    
+                    start, end, orderByComparator
+                };
+        }
+
+        List<Markup> list = (List<Markup>) FinderCacheUtil.getResult(finderPath,
                 finderArgs, this);
 
         if (list == null) {
@@ -1483,13 +1711,11 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
                 throw processException(e);
             } finally {
                 if (list == null) {
-                    FinderCacheUtil.removeResult(FINDER_PATH_FIND_BY_GROUPIDSTATUSANDLOCATION,
-                        finderArgs);
+                    FinderCacheUtil.removeResult(finderPath, finderArgs);
                 } else {
                     cacheResult(list);
 
-                    FinderCacheUtil.putResult(FINDER_PATH_FIND_BY_GROUPIDSTATUSANDLOCATION,
-                        finderArgs, list);
+                    FinderCacheUtil.putResult(finderPath, finderArgs, list);
                 }
 
                 closeSession(session);
@@ -1500,16 +1726,16 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds the first markup in the ordered set where groupId = &#63; and active = &#63; and location = &#63;.
+     * Returns the first markup in the ordered set where groupId = &#63; and active = &#63; and location = &#63;.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
-     * @param groupId the group id to search with
-     * @param active the active to search with
-     * @param location the location to search with
-     * @param orderByComparator the comparator to order the set by
+     * @param groupId the group ID
+     * @param active the active
+     * @param location the location
+     * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
      * @return the first matching markup
      * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a matching markup could not be found
      * @throws SystemException if a system exception occurred
@@ -1543,16 +1769,16 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds the last markup in the ordered set where groupId = &#63; and active = &#63; and location = &#63;.
+     * Returns the last markup in the ordered set where groupId = &#63; and active = &#63; and location = &#63;.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
-     * @param groupId the group id to search with
-     * @param active the active to search with
-     * @param location the location to search with
-     * @param orderByComparator the comparator to order the set by
+     * @param groupId the group ID
+     * @param active the active
+     * @param location the location
+     * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
      * @return the last matching markup
      * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a matching markup could not be found
      * @throws SystemException if a system exception occurred
@@ -1588,17 +1814,17 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds the markups before and after the current markup in the ordered set where groupId = &#63; and active = &#63; and location = &#63;.
+     * Returns the markups before and after the current markup in the ordered set where groupId = &#63; and active = &#63; and location = &#63;.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
      * @param id the primary key of the current markup
-     * @param groupId the group id to search with
-     * @param active the active to search with
-     * @param location the location to search with
-     * @param orderByComparator the comparator to order the set by
+     * @param groupId the group ID
+     * @param active the active
+     * @param location the location
+     * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
      * @return the previous, current, and next markup
      * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a markup with the primary key could not be found
      * @throws SystemException if a system exception occurred
@@ -1653,17 +1879,17 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
         query.append(_FINDER_COLUMN_GROUPIDSTATUSANDLOCATION_LOCATION_2);
 
         if (orderByComparator != null) {
-            String[] orderByFields = orderByComparator.getOrderByFields();
+            String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
 
-            if (orderByFields.length > 0) {
+            if (orderByConditionFields.length > 0) {
                 query.append(WHERE_AND);
             }
 
-            for (int i = 0; i < orderByFields.length; i++) {
+            for (int i = 0; i < orderByConditionFields.length; i++) {
                 query.append(_ORDER_BY_ENTITY_ALIAS);
-                query.append(orderByFields[i]);
+                query.append(orderByConditionFields[i]);
 
-                if ((i + 1) < orderByFields.length) {
+                if ((i + 1) < orderByConditionFields.length) {
                     if (orderByComparator.isAscending() ^ previous) {
                         query.append(WHERE_GREATER_THAN_HAS_NEXT);
                     } else {
@@ -1679,6 +1905,8 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
             }
 
             query.append(ORDER_BY_CLAUSE);
+
+            String[] orderByFields = orderByComparator.getOrderByFields();
 
             for (int i = 0; i < orderByFields.length; i++) {
                 query.append(_ORDER_BY_ENTITY_ALIAS);
@@ -1716,7 +1944,7 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
         qPos.add(location);
 
         if (orderByComparator != null) {
-            Object[] values = orderByComparator.getOrderByValues(markup);
+            Object[] values = orderByComparator.getOrderByConditionValues(markup);
 
             for (Object value : values) {
                 qPos.add(value);
@@ -1733,7 +1961,7 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds all the markups.
+     * Returns all the markups.
      *
      * @return the markups
      * @throws SystemException if a system exception occurred
@@ -1743,14 +1971,14 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds a range of all the markups.
+     * Returns a range of all the markups.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
-     * @param start the lower bound of the range of markups to return
-     * @param end the upper bound of the range of markups to return (not inclusive)
+     * @param start the lower bound of the range of markups
+     * @param end the upper bound of the range of markups (not inclusive)
      * @return the range of markups
      * @throws SystemException if a system exception occurred
      */
@@ -1759,26 +1987,33 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Finds an ordered range of all the markups.
+     * Returns an ordered range of all the markups.
      *
      * <p>
      * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
      * </p>
      *
-     * @param start the lower bound of the range of markups to return
-     * @param end the upper bound of the range of markups to return (not inclusive)
-     * @param orderByComparator the comparator to order the results by
+     * @param start the lower bound of the range of markups
+     * @param end the upper bound of the range of markups (not inclusive)
+     * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
      * @return the ordered range of markups
      * @throws SystemException if a system exception occurred
      */
     public List<Markup> findAll(int start, int end,
         OrderByComparator orderByComparator) throws SystemException {
-        Object[] finderArgs = new Object[] {
-                String.valueOf(start), String.valueOf(end),
-                String.valueOf(orderByComparator)
-            };
+        FinderPath finderPath = null;
+        Object[] finderArgs = new Object[] { start, end, orderByComparator };
 
-        List<Markup> list = (List<Markup>) FinderCacheUtil.getResult(FINDER_PATH_FIND_ALL,
+        if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+                (orderByComparator == null)) {
+            finderPath = FINDER_PATH_WITH_PAGINATION_FIND_ALL;
+            finderArgs = FINDER_ARGS_EMPTY;
+        } else {
+            finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL;
+            finderArgs = new Object[] { start, end, orderByComparator };
+        }
+
+        List<Markup> list = (List<Markup>) FinderCacheUtil.getResult(finderPath,
                 finderArgs, this);
 
         if (list == null) {
@@ -1819,13 +2054,11 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
                 throw processException(e);
             } finally {
                 if (list == null) {
-                    FinderCacheUtil.removeResult(FINDER_PATH_FIND_ALL,
-                        finderArgs);
+                    FinderCacheUtil.removeResult(finderPath, finderArgs);
                 } else {
                     cacheResult(list);
 
-                    FinderCacheUtil.putResult(FINDER_PATH_FIND_ALL, finderArgs,
-                        list);
+                    FinderCacheUtil.putResult(finderPath, finderArgs, list);
                 }
 
                 closeSession(session);
@@ -1838,7 +2071,7 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     /**
      * Removes all the markups where groupId = &#63; from the database.
      *
-     * @param groupId the group id to search with
+     * @param groupId the group ID
      * @throws SystemException if a system exception occurred
      */
     public void removeByGroupId(long groupId) throws SystemException {
@@ -1850,7 +2083,7 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     /**
      * Removes all the markups where companyId = &#63; from the database.
      *
-     * @param companyId the company id to search with
+     * @param companyId the company ID
      * @throws SystemException if a system exception occurred
      */
     public void removeByCompanyId(long companyId) throws SystemException {
@@ -1862,8 +2095,8 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     /**
      * Removes all the markups where groupId = &#63; and location = &#63; from the database.
      *
-     * @param groupId the group id to search with
-     * @param location the location to search with
+     * @param groupId the group ID
+     * @param location the location
      * @throws SystemException if a system exception occurred
      */
     public void removeByGroupIdAndLocation(long groupId, short location)
@@ -1876,9 +2109,9 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     /**
      * Removes all the markups where groupId = &#63; and active = &#63; and location = &#63; from the database.
      *
-     * @param groupId the group id to search with
-     * @param active the active to search with
-     * @param location the location to search with
+     * @param groupId the group ID
+     * @param active the active
+     * @param location the location
      * @throws SystemException if a system exception occurred
      */
     public void removeByGroupIdStatusAndLocation(long groupId, boolean active,
@@ -1901,9 +2134,9 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Counts all the markups where groupId = &#63;.
+     * Returns the number of markups where groupId = &#63;.
      *
-     * @param groupId the group id to search with
+     * @param groupId the group ID
      * @return the number of matching markups
      * @throws SystemException if a system exception occurred
      */
@@ -1952,9 +2185,9 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Counts all the markups where companyId = &#63;.
+     * Returns the number of markups where companyId = &#63;.
      *
-     * @param companyId the company id to search with
+     * @param companyId the company ID
      * @return the number of matching markups
      * @throws SystemException if a system exception occurred
      */
@@ -2003,10 +2236,10 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Counts all the markups where groupId = &#63; and location = &#63;.
+     * Returns the number of markups where groupId = &#63; and location = &#63;.
      *
-     * @param groupId the group id to search with
-     * @param location the location to search with
+     * @param groupId the group ID
+     * @param location the location
      * @return the number of matching markups
      * @throws SystemException if a system exception occurred
      */
@@ -2060,11 +2293,11 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Counts all the markups where groupId = &#63; and active = &#63; and location = &#63;.
+     * Returns the number of markups where groupId = &#63; and active = &#63; and location = &#63;.
      *
-     * @param groupId the group id to search with
-     * @param active the active to search with
-     * @param location the location to search with
+     * @param groupId the group ID
+     * @param active the active
+     * @param location the location
      * @return the number of matching markups
      * @throws SystemException if a system exception occurred
      */
@@ -2122,16 +2355,14 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     }
 
     /**
-     * Counts all the markups.
+     * Returns the number of markups.
      *
      * @return the number of markups
      * @throws SystemException if a system exception occurred
      */
     public int countAll() throws SystemException {
-        Object[] finderArgs = new Object[0];
-
         Long count = (Long) FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
-                finderArgs, this);
+                FINDER_ARGS_EMPTY, this);
 
         if (count == null) {
             Session session = null;
@@ -2149,8 +2380,8 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
                     count = Long.valueOf(0);
                 }
 
-                FinderCacheUtil.putResult(FINDER_PATH_COUNT_ALL, finderArgs,
-                    count);
+                FinderCacheUtil.putResult(FINDER_PATH_COUNT_ALL,
+                    FINDER_ARGS_EMPTY, count);
 
                 closeSession(session);
             }
@@ -2186,6 +2417,6 @@ public class MarkupPersistenceImpl extends BasePersistenceImpl<Markup>
     public void destroy() {
         EntityCacheUtil.removeCache(MarkupImpl.class.getName());
         FinderCacheUtil.removeCache(FINDER_CLASS_NAME_ENTITY);
-        FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST);
+        FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
     }
 }

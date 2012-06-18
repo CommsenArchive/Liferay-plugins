@@ -13,7 +13,7 @@ import com.commsen.liferay.portlet.customglobalmarkup.model.Markup;
  * Never reference this class directly. All methods that expect a markup model instance should use the {@link Markup} interface instead.
  * </p>
  */
-public class MarkupImpl extends MarkupModelImpl implements Markup {
+public class MarkupImpl extends MarkupBaseImpl {
     public MarkupImpl() {
     }
 }

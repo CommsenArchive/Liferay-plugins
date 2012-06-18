@@ -6,16 +6,13 @@ import com.liferay.portal.kernel.bean.PortletBeanLocatorUtil;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.ReferenceRegistry;
 import com.liferay.portal.service.ServiceContext;
 
 import java.util.List;
 
 /**
  * The persistence utility for the markup service. This utility wraps {@link MarkupPersistenceImpl} and provides direct access to the database for CRUD operations. This utility should only be used by the service layer, as it must operate within a transaction. Never access this utility in a JSP, controller, model, or other front-end class.
- *
- * <p>
- * Never modify this class directly. Modify <code>service.xml</code> and rerun ServiceBuilder to regenerate this class.
- * </p>
  *
  * <p>
  * Caching information and settings can be found in <code>portal.properties</code>
@@ -28,6 +25,12 @@ import java.util.List;
  */
 public class MarkupUtil {
     private static MarkupPersistence _persistence;
+
+    /*
+     * NOTE FOR DEVELOPERS:
+     *
+     * Never modify this class directly. Modify <code>service.xml</code> and rerun ServiceBuilder to regenerate this class.
+     */
 
     /**
      * @see com.liferay.portal.service.persistence.BasePersistence#clearCache()
@@ -79,13 +82,6 @@ public class MarkupUtil {
     }
 
     /**
-     * @see com.liferay.portal.service.persistence.BasePersistence#remove(com.liferay.portal.model.BaseModel)
-     */
-    public static Markup remove(Markup markup) throws SystemException {
-        return getPersistence().remove(markup);
-    }
-
-    /**
      * @see com.liferay.portal.service.persistence.BasePersistence#update(com.liferay.portal.model.BaseModel, boolean)
      */
     public static Markup update(Markup markup, boolean merge)
@@ -104,7 +100,7 @@ public class MarkupUtil {
     /**
     * Caches the markup in the entity cache if it is enabled.
     *
-    * @param markup the markup to cache
+    * @param markup the markup
     */
     public static void cacheResult(
         com.commsen.liferay.portlet.customglobalmarkup.model.Markup markup) {
@@ -114,7 +110,7 @@ public class MarkupUtil {
     /**
     * Caches the markups in the entity cache if it is enabled.
     *
-    * @param markups the markups to cache
+    * @param markups the markups
     */
     public static void cacheResult(
         java.util.List<com.commsen.liferay.portlet.customglobalmarkup.model.Markup> markups) {
@@ -135,7 +131,7 @@ public class MarkupUtil {
     /**
     * Removes the markup with the primary key from the database. Also notifies the appropriate model listeners.
     *
-    * @param id the primary key of the markup to remove
+    * @param id the primary key of the markup
     * @return the markup that was removed
     * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a markup with the primary key could not be found
     * @throws SystemException if a system exception occurred
@@ -155,9 +151,9 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds the markup with the primary key or throws a {@link com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException} if it could not be found.
+    * Returns the markup with the primary key or throws a {@link com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException} if it could not be found.
     *
-    * @param id the primary key of the markup to find
+    * @param id the primary key of the markup
     * @return the markup
     * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a markup with the primary key could not be found
     * @throws SystemException if a system exception occurred
@@ -170,9 +166,9 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds the markup with the primary key or returns <code>null</code> if it could not be found.
+    * Returns the markup with the primary key or returns <code>null</code> if it could not be found.
     *
-    * @param id the primary key of the markup to find
+    * @param id the primary key of the markup
     * @return the markup, or <code>null</code> if a markup with the primary key could not be found
     * @throws SystemException if a system exception occurred
     */
@@ -182,9 +178,9 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds all the markups where groupId = &#63;.
+    * Returns all the markups where groupId = &#63;.
     *
-    * @param groupId the group id to search with
+    * @param groupId the group ID
     * @return the matching markups
     * @throws SystemException if a system exception occurred
     */
@@ -195,15 +191,15 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds a range of all the markups where groupId = &#63;.
+    * Returns a range of all the markups where groupId = &#63;.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
-    * @param groupId the group id to search with
-    * @param start the lower bound of the range of markups to return
-    * @param end the upper bound of the range of markups to return (not inclusive)
+    * @param groupId the group ID
+    * @param start the lower bound of the range of markups
+    * @param end the upper bound of the range of markups (not inclusive)
     * @return the range of matching markups
     * @throws SystemException if a system exception occurred
     */
@@ -214,16 +210,16 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds an ordered range of all the markups where groupId = &#63;.
+    * Returns an ordered range of all the markups where groupId = &#63;.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
-    * @param groupId the group id to search with
-    * @param start the lower bound of the range of markups to return
-    * @param end the upper bound of the range of markups to return (not inclusive)
-    * @param orderByComparator the comparator to order the results by
+    * @param groupId the group ID
+    * @param start the lower bound of the range of markups
+    * @param end the upper bound of the range of markups (not inclusive)
+    * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
     * @return the ordered range of matching markups
     * @throws SystemException if a system exception occurred
     */
@@ -236,14 +232,14 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds the first markup in the ordered set where groupId = &#63;.
+    * Returns the first markup in the ordered set where groupId = &#63;.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
-    * @param groupId the group id to search with
-    * @param orderByComparator the comparator to order the set by
+    * @param groupId the group ID
+    * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
     * @return the first matching markup
     * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a matching markup could not be found
     * @throws SystemException if a system exception occurred
@@ -257,14 +253,14 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds the last markup in the ordered set where groupId = &#63;.
+    * Returns the last markup in the ordered set where groupId = &#63;.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
-    * @param groupId the group id to search with
-    * @param orderByComparator the comparator to order the set by
+    * @param groupId the group ID
+    * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
     * @return the last matching markup
     * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a matching markup could not be found
     * @throws SystemException if a system exception occurred
@@ -278,15 +274,15 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds the markups before and after the current markup in the ordered set where groupId = &#63;.
+    * Returns the markups before and after the current markup in the ordered set where groupId = &#63;.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
     * @param id the primary key of the current markup
-    * @param groupId the group id to search with
-    * @param orderByComparator the comparator to order the set by
+    * @param groupId the group ID
+    * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
     * @return the previous, current, and next markup
     * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a markup with the primary key could not be found
     * @throws SystemException if a system exception occurred
@@ -301,9 +297,9 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds all the markups where companyId = &#63;.
+    * Returns all the markups where companyId = &#63;.
     *
-    * @param companyId the company id to search with
+    * @param companyId the company ID
     * @return the matching markups
     * @throws SystemException if a system exception occurred
     */
@@ -314,15 +310,15 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds a range of all the markups where companyId = &#63;.
+    * Returns a range of all the markups where companyId = &#63;.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
-    * @param companyId the company id to search with
-    * @param start the lower bound of the range of markups to return
-    * @param end the upper bound of the range of markups to return (not inclusive)
+    * @param companyId the company ID
+    * @param start the lower bound of the range of markups
+    * @param end the upper bound of the range of markups (not inclusive)
     * @return the range of matching markups
     * @throws SystemException if a system exception occurred
     */
@@ -333,16 +329,16 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds an ordered range of all the markups where companyId = &#63;.
+    * Returns an ordered range of all the markups where companyId = &#63;.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
-    * @param companyId the company id to search with
-    * @param start the lower bound of the range of markups to return
-    * @param end the upper bound of the range of markups to return (not inclusive)
-    * @param orderByComparator the comparator to order the results by
+    * @param companyId the company ID
+    * @param start the lower bound of the range of markups
+    * @param end the upper bound of the range of markups (not inclusive)
+    * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
     * @return the ordered range of matching markups
     * @throws SystemException if a system exception occurred
     */
@@ -355,14 +351,14 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds the first markup in the ordered set where companyId = &#63;.
+    * Returns the first markup in the ordered set where companyId = &#63;.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
-    * @param companyId the company id to search with
-    * @param orderByComparator the comparator to order the set by
+    * @param companyId the company ID
+    * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
     * @return the first matching markup
     * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a matching markup could not be found
     * @throws SystemException if a system exception occurred
@@ -377,14 +373,14 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds the last markup in the ordered set where companyId = &#63;.
+    * Returns the last markup in the ordered set where companyId = &#63;.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
-    * @param companyId the company id to search with
-    * @param orderByComparator the comparator to order the set by
+    * @param companyId the company ID
+    * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
     * @return the last matching markup
     * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a matching markup could not be found
     * @throws SystemException if a system exception occurred
@@ -399,15 +395,15 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds the markups before and after the current markup in the ordered set where companyId = &#63;.
+    * Returns the markups before and after the current markup in the ordered set where companyId = &#63;.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
     * @param id the primary key of the current markup
-    * @param companyId the company id to search with
-    * @param orderByComparator the comparator to order the set by
+    * @param companyId the company ID
+    * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
     * @return the previous, current, and next markup
     * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a markup with the primary key could not be found
     * @throws SystemException if a system exception occurred
@@ -422,10 +418,10 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds all the markups where groupId = &#63; and location = &#63;.
+    * Returns all the markups where groupId = &#63; and location = &#63;.
     *
-    * @param groupId the group id to search with
-    * @param location the location to search with
+    * @param groupId the group ID
+    * @param location the location
     * @return the matching markups
     * @throws SystemException if a system exception occurred
     */
@@ -436,16 +432,16 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds a range of all the markups where groupId = &#63; and location = &#63;.
+    * Returns a range of all the markups where groupId = &#63; and location = &#63;.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
-    * @param groupId the group id to search with
-    * @param location the location to search with
-    * @param start the lower bound of the range of markups to return
-    * @param end the upper bound of the range of markups to return (not inclusive)
+    * @param groupId the group ID
+    * @param location the location
+    * @param start the lower bound of the range of markups
+    * @param end the upper bound of the range of markups (not inclusive)
     * @return the range of matching markups
     * @throws SystemException if a system exception occurred
     */
@@ -457,17 +453,17 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds an ordered range of all the markups where groupId = &#63; and location = &#63;.
+    * Returns an ordered range of all the markups where groupId = &#63; and location = &#63;.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
-    * @param groupId the group id to search with
-    * @param location the location to search with
-    * @param start the lower bound of the range of markups to return
-    * @param end the upper bound of the range of markups to return (not inclusive)
-    * @param orderByComparator the comparator to order the results by
+    * @param groupId the group ID
+    * @param location the location
+    * @param start the lower bound of the range of markups
+    * @param end the upper bound of the range of markups (not inclusive)
+    * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
     * @return the ordered range of matching markups
     * @throws SystemException if a system exception occurred
     */
@@ -481,15 +477,15 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds the first markup in the ordered set where groupId = &#63; and location = &#63;.
+    * Returns the first markup in the ordered set where groupId = &#63; and location = &#63;.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
-    * @param groupId the group id to search with
-    * @param location the location to search with
-    * @param orderByComparator the comparator to order the set by
+    * @param groupId the group ID
+    * @param location the location
+    * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
     * @return the first matching markup
     * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a matching markup could not be found
     * @throws SystemException if a system exception occurred
@@ -505,15 +501,15 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds the last markup in the ordered set where groupId = &#63; and location = &#63;.
+    * Returns the last markup in the ordered set where groupId = &#63; and location = &#63;.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
-    * @param groupId the group id to search with
-    * @param location the location to search with
-    * @param orderByComparator the comparator to order the set by
+    * @param groupId the group ID
+    * @param location the location
+    * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
     * @return the last matching markup
     * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a matching markup could not be found
     * @throws SystemException if a system exception occurred
@@ -529,16 +525,16 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds the markups before and after the current markup in the ordered set where groupId = &#63; and location = &#63;.
+    * Returns the markups before and after the current markup in the ordered set where groupId = &#63; and location = &#63;.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
     * @param id the primary key of the current markup
-    * @param groupId the group id to search with
-    * @param location the location to search with
-    * @param orderByComparator the comparator to order the set by
+    * @param groupId the group ID
+    * @param location the location
+    * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
     * @return the previous, current, and next markup
     * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a markup with the primary key could not be found
     * @throws SystemException if a system exception occurred
@@ -554,11 +550,11 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds all the markups where groupId = &#63; and active = &#63; and location = &#63;.
+    * Returns all the markups where groupId = &#63; and active = &#63; and location = &#63;.
     *
-    * @param groupId the group id to search with
-    * @param active the active to search with
-    * @param location the location to search with
+    * @param groupId the group ID
+    * @param active the active
+    * @param location the location
     * @return the matching markups
     * @throws SystemException if a system exception occurred
     */
@@ -570,17 +566,17 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds a range of all the markups where groupId = &#63; and active = &#63; and location = &#63;.
+    * Returns a range of all the markups where groupId = &#63; and active = &#63; and location = &#63;.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
-    * @param groupId the group id to search with
-    * @param active the active to search with
-    * @param location the location to search with
-    * @param start the lower bound of the range of markups to return
-    * @param end the upper bound of the range of markups to return (not inclusive)
+    * @param groupId the group ID
+    * @param active the active
+    * @param location the location
+    * @param start the lower bound of the range of markups
+    * @param end the upper bound of the range of markups (not inclusive)
     * @return the range of matching markups
     * @throws SystemException if a system exception occurred
     */
@@ -593,18 +589,18 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds an ordered range of all the markups where groupId = &#63; and active = &#63; and location = &#63;.
+    * Returns an ordered range of all the markups where groupId = &#63; and active = &#63; and location = &#63;.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
-    * @param groupId the group id to search with
-    * @param active the active to search with
-    * @param location the location to search with
-    * @param start the lower bound of the range of markups to return
-    * @param end the upper bound of the range of markups to return (not inclusive)
-    * @param orderByComparator the comparator to order the results by
+    * @param groupId the group ID
+    * @param active the active
+    * @param location the location
+    * @param start the lower bound of the range of markups
+    * @param end the upper bound of the range of markups (not inclusive)
+    * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
     * @return the ordered range of matching markups
     * @throws SystemException if a system exception occurred
     */
@@ -618,16 +614,16 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds the first markup in the ordered set where groupId = &#63; and active = &#63; and location = &#63;.
+    * Returns the first markup in the ordered set where groupId = &#63; and active = &#63; and location = &#63;.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
-    * @param groupId the group id to search with
-    * @param active the active to search with
-    * @param location the location to search with
-    * @param orderByComparator the comparator to order the set by
+    * @param groupId the group ID
+    * @param active the active
+    * @param location the location
+    * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
     * @return the first matching markup
     * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a matching markup could not be found
     * @throws SystemException if a system exception occurred
@@ -643,16 +639,16 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds the last markup in the ordered set where groupId = &#63; and active = &#63; and location = &#63;.
+    * Returns the last markup in the ordered set where groupId = &#63; and active = &#63; and location = &#63;.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
-    * @param groupId the group id to search with
-    * @param active the active to search with
-    * @param location the location to search with
-    * @param orderByComparator the comparator to order the set by
+    * @param groupId the group ID
+    * @param active the active
+    * @param location the location
+    * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
     * @return the last matching markup
     * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a matching markup could not be found
     * @throws SystemException if a system exception occurred
@@ -668,17 +664,17 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds the markups before and after the current markup in the ordered set where groupId = &#63; and active = &#63; and location = &#63;.
+    * Returns the markups before and after the current markup in the ordered set where groupId = &#63; and active = &#63; and location = &#63;.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
     * @param id the primary key of the current markup
-    * @param groupId the group id to search with
-    * @param active the active to search with
-    * @param location the location to search with
-    * @param orderByComparator the comparator to order the set by
+    * @param groupId the group ID
+    * @param active the active
+    * @param location the location
+    * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
     * @return the previous, current, and next markup
     * @throws com.commsen.liferay.portlet.customglobalmarkup.NoSuchMarkupException if a markup with the primary key could not be found
     * @throws SystemException if a system exception occurred
@@ -694,7 +690,7 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds all the markups.
+    * Returns all the markups.
     *
     * @return the markups
     * @throws SystemException if a system exception occurred
@@ -705,14 +701,14 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds a range of all the markups.
+    * Returns a range of all the markups.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
-    * @param start the lower bound of the range of markups to return
-    * @param end the upper bound of the range of markups to return (not inclusive)
+    * @param start the lower bound of the range of markups
+    * @param end the upper bound of the range of markups (not inclusive)
     * @return the range of markups
     * @throws SystemException if a system exception occurred
     */
@@ -723,15 +719,15 @@ public class MarkupUtil {
     }
 
     /**
-    * Finds an ordered range of all the markups.
+    * Returns an ordered range of all the markups.
     *
     * <p>
     * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
     * </p>
     *
-    * @param start the lower bound of the range of markups to return
-    * @param end the upper bound of the range of markups to return (not inclusive)
-    * @param orderByComparator the comparator to order the results by
+    * @param start the lower bound of the range of markups
+    * @param end the upper bound of the range of markups (not inclusive)
+    * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
     * @return the ordered range of markups
     * @throws SystemException if a system exception occurred
     */
@@ -745,7 +741,7 @@ public class MarkupUtil {
     /**
     * Removes all the markups where groupId = &#63; from the database.
     *
-    * @param groupId the group id to search with
+    * @param groupId the group ID
     * @throws SystemException if a system exception occurred
     */
     public static void removeByGroupId(long groupId)
@@ -756,7 +752,7 @@ public class MarkupUtil {
     /**
     * Removes all the markups where companyId = &#63; from the database.
     *
-    * @param companyId the company id to search with
+    * @param companyId the company ID
     * @throws SystemException if a system exception occurred
     */
     public static void removeByCompanyId(long companyId)
@@ -767,8 +763,8 @@ public class MarkupUtil {
     /**
     * Removes all the markups where groupId = &#63; and location = &#63; from the database.
     *
-    * @param groupId the group id to search with
-    * @param location the location to search with
+    * @param groupId the group ID
+    * @param location the location
     * @throws SystemException if a system exception occurred
     */
     public static void removeByGroupIdAndLocation(long groupId, short location)
@@ -779,9 +775,9 @@ public class MarkupUtil {
     /**
     * Removes all the markups where groupId = &#63; and active = &#63; and location = &#63; from the database.
     *
-    * @param groupId the group id to search with
-    * @param active the active to search with
-    * @param location the location to search with
+    * @param groupId the group ID
+    * @param active the active
+    * @param location the location
     * @throws SystemException if a system exception occurred
     */
     public static void removeByGroupIdStatusAndLocation(long groupId,
@@ -802,9 +798,9 @@ public class MarkupUtil {
     }
 
     /**
-    * Counts all the markups where groupId = &#63;.
+    * Returns the number of markups where groupId = &#63;.
     *
-    * @param groupId the group id to search with
+    * @param groupId the group ID
     * @return the number of matching markups
     * @throws SystemException if a system exception occurred
     */
@@ -814,9 +810,9 @@ public class MarkupUtil {
     }
 
     /**
-    * Counts all the markups where companyId = &#63;.
+    * Returns the number of markups where companyId = &#63;.
     *
-    * @param companyId the company id to search with
+    * @param companyId the company ID
     * @return the number of matching markups
     * @throws SystemException if a system exception occurred
     */
@@ -826,10 +822,10 @@ public class MarkupUtil {
     }
 
     /**
-    * Counts all the markups where groupId = &#63; and location = &#63;.
+    * Returns the number of markups where groupId = &#63; and location = &#63;.
     *
-    * @param groupId the group id to search with
-    * @param location the location to search with
+    * @param groupId the group ID
+    * @param location the location
     * @return the number of matching markups
     * @throws SystemException if a system exception occurred
     */
@@ -839,11 +835,11 @@ public class MarkupUtil {
     }
 
     /**
-    * Counts all the markups where groupId = &#63; and active = &#63; and location = &#63;.
+    * Returns the number of markups where groupId = &#63; and active = &#63; and location = &#63;.
     *
-    * @param groupId the group id to search with
-    * @param active the active to search with
-    * @param location the location to search with
+    * @param groupId the group ID
+    * @param active the active
+    * @param location the location
     * @return the number of matching markups
     * @throws SystemException if a system exception occurred
     */
@@ -855,7 +851,7 @@ public class MarkupUtil {
     }
 
     /**
-    * Counts all the markups.
+    * Returns the number of markups.
     *
     * @return the number of markups
     * @throws SystemException if a system exception occurred
@@ -867,8 +863,10 @@ public class MarkupUtil {
 
     public static MarkupPersistence getPersistence() {
         if (_persistence == null) {
-            _persistence = (MarkupPersistence) PortletBeanLocatorUtil.locate(com.commsen.liferay.portlet.customglobalmarkup.service.ClpSerializer.SERVLET_CONTEXT_NAME,
+            _persistence = (MarkupPersistence) PortletBeanLocatorUtil.locate(com.commsen.liferay.portlet.customglobalmarkup.service.ClpSerializer.getServletContextName(),
                     MarkupPersistence.class.getName());
+
+            ReferenceRegistry.registerReference(MarkupUtil.class, "_persistence");
         }
 
         return _persistence;
@@ -876,5 +874,7 @@ public class MarkupUtil {
 
     public void setPersistence(MarkupPersistence persistence) {
         _persistence = persistence;
+
+        ReferenceRegistry.registerReference(MarkupUtil.class, "_persistence");
     }
 }
