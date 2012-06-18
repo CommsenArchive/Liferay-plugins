@@ -5,7 +5,9 @@
 		<field name="id" type="long" />
 		<field name="companyId" type="long" />
 		<field name="groupId" type="long" />
-		<field name="markup" type="String" />
+		<field name="markup" type="String">
+			<hint name="max-length">2000</hint>
+		</field>
 		<field name="active" type="boolean" />
 		<field name="location" type="short" />
 	</model>

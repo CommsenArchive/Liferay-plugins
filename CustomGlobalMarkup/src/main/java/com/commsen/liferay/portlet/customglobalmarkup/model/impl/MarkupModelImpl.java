@@ -48,7 +48,7 @@ public class MarkupModelImpl extends BaseModelImpl<Markup>
             { "active_", Types.BOOLEAN },
             { "location", Types.INTEGER }
         };
-    public static final String TABLE_SQL_CREATE = "create table CGM_Markup (id_ LONG not null primary key,companyId LONG,groupId LONG,markup VARCHAR(75) null,active_ BOOLEAN,location INTEGER)";
+    public static final String TABLE_SQL_CREATE = "create table CGM_Markup (id_ LONG not null primary key,companyId LONG,groupId LONG,markup VARCHAR(2000) null,active_ BOOLEAN,location INTEGER)";
     public static final String TABLE_SQL_DROP = "drop table CGM_Markup";
     public static final String DATA_SOURCE = "liferayDataSource";
     public static final String SESSION_FACTORY = "liferaySessionFactory";

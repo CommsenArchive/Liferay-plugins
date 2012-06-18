@@ -203,7 +203,8 @@ public class MarkupWrapper implements Markup, ModelWrapper<Markup> {
         return new MarkupWrapper((Markup) _markup.clone());
     }
 
-    public int compareTo(Markup markup) {
+    public int compareTo(
+        com.commsen.liferay.portlet.customglobalmarkup.model.Markup markup) {
         return _markup.compareTo(markup);
     }
 
@@ -212,11 +213,11 @@ public class MarkupWrapper implements Markup, ModelWrapper<Markup> {
         return _markup.hashCode();
     }
 
-    public com.liferay.portal.model.CacheModel<Markup> toCacheModel() {
+    public com.liferay.portal.model.CacheModel<com.commsen.liferay.portlet.customglobalmarkup.model.Markup> toCacheModel() {
         return _markup.toCacheModel();
     }
 
-    public Markup toEscapedModel() {
+    public com.commsen.liferay.portlet.customglobalmarkup.model.Markup toEscapedModel() {
         return new MarkupWrapper(_markup.toEscapedModel());
     }
 
