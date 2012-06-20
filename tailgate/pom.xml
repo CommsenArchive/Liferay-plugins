@@ -5,13 +5,13 @@
 	<groupId>com.commsen.liferay.portlet.tailgate</groupId>
 	<artifactId>tailgate-portlet</artifactId>
 	<packaging>war</packaging>
-	<version>6.0.5.2-SNAPSHOT</version>
+	<version>6.1.0.1</version>
 	<name>Tailgate</name>
 	<url>http://www.commsen.com/</url>
 
 	<properties>
 		<liferay.auto.deploy.dir>../bundles/liferay-portal-6.0/deploy</liferay.auto.deploy.dir>
-		<liferay.version>6.0.5</liferay.version>
+		<liferay.version>6.1.0</liferay.version>
 	</properties>
 
 	<dependencies>
@@ -56,12 +56,6 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.4</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet.jsp</groupId>
-			<artifactId>jsp-api</artifactId>
-			<version>2.0</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
