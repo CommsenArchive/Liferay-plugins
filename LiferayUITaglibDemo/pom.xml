@@ -8,13 +8,13 @@
 	<groupId>com.commsen.example.liferay.taglib.ui</groupId>
 	<artifactId>liferay-ui-taglib-demo-portlet</artifactId>
 	<packaging>war</packaging>
-	<version>6.0.5.1</version>
+	<version>6.1.0.1</version>
 	<name>Liferay UI Taglib Demo</name>
 	<url>http://commsen.com</url>
 	
 	<properties>
-		<liferay.auto.deploy.dir>../bundles/liferay-portal-6.0/deploy</liferay.auto.deploy.dir>
-		<liferay.version>6.0.5</liferay.version>
+		<liferay.auto.deploy.dir>../bundles/liferay-portal-6.1/deploy</liferay.auto.deploy.dir>
+		<liferay.version>6.1.0</liferay.version>
 	</properties>
 	
 	<dependencies>
@@ -60,12 +60,6 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 			<version>1.1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet.jsp</groupId>
-			<artifactId>jsp-api</artifactId>
-			<version>2.0</version>
-			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
