@@ -21,10 +21,12 @@
 <%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
-
-
 <%@page import="java.util.List"%>
-<%@page import="java.util.ArrayList"%><table width="100%" border="1">
+<%@page import="java.util.ArrayList"%>
+
+<liferay-theme:defineObjects />
+
+<table width="100%" border="0">
 	<col width="50%">
 	<col width="50%">
   <tr>

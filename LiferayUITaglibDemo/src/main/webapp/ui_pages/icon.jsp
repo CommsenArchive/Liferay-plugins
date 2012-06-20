@@ -28,8 +28,9 @@
 <%@page import="com.liferay.portal.service.ThemeLocalServiceUtil"%>
 <%@page import="com.liferay.portal.kernel.util.WebKeys"%>
 
+<liferay-theme:defineObjects />
 
-<table width="100%" border="1">
+<table width="100%" border="0">
 	<col width="50%">
 	<col width="50%">
   <tr>

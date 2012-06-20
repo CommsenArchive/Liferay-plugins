@@ -21,8 +21,9 @@
 <%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
+<liferay-theme:defineObjects />
 
-<table width="100%" border="1">
+<table width="100%" border="0">
 	<col width="50%">
 	<col width="50%">
   <tr>

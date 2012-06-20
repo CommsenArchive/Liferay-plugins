@@ -22,15 +22,14 @@
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
 
-
 <%@page import="com.liferay.portal.theme.ThemeDisplay"%>
 <%@page import="com.liferay.portal.service.ThemeServiceUtil"%>
 <%@page import="com.liferay.portal.service.ThemeLocalServiceUtil"%>
 <%@page import="com.liferay.portal.kernel.util.WebKeys"%>
 
-<% 
-	ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(WebKeys.THEME_DISPLAY);
-%>
+<liferay-theme:defineObjects />
+
+
 
 <h3>
 This portlet demonstrates how to use some of the tags from liferay-ui tag library. 
@@ -38,7 +37,7 @@ This portlet demonstrates how to use some of the tags from liferay-ui tag librar
 
 
 
-<table width="100%" border="1">
+<table width="100%" border="0">
 	<col width="50%">
 	<col width="50%">
   <tr>

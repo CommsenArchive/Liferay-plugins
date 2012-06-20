@@ -33,10 +33,8 @@
 <%@page import="com.liferay.portlet.journal.model.JournalArticle"%>
 <%@page import="com.liferay.portlet.journal.model.JournalArticleModel"%>
 
-<% 
-	ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(WebKeys.THEME_DISPLAY);
-%>
 
+<liferay-theme:defineObjects />
 
 <span class="portlet-msg-alert">
 	Note: <code>liferay-ui:input-permissions</code> requires logged in user with appropriate permissions.
@@ -47,7 +45,7 @@
 
 <form action="<liferay-portlet:actionURL />" method="post" name="<portlet:namespace />boo">	
 
-<table width="100%" border="1">
+<table width="100%" border="0">
 	<col width="50%">
 	<col width="50%">
   <tr>
