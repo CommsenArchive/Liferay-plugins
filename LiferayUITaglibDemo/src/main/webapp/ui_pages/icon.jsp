@@ -33,7 +33,7 @@
 <table width="100%" border="0">
 	<col width="50%">
 	<col width="50%">
-  <tr>
+  <tr class="results-header">
     <th>Tag</th>
     <th>Preview</th>
   </tr>
@@ -43,7 +43,7 @@
   <!-- 
   	liferay-ui:icon
    -->
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;liferay-ui:icon 
@@ -75,7 +75,7 @@
   <!-- 
   	liferay-ui:icon-list
    -->
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;liferay-ui:icon-list/&gt;
@@ -101,7 +101,7 @@
   <!-- 
   	liferay-ui:icon-menu
    -->
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;liferay-ui:icon-menu message="My icon menu" align="left" &gt;

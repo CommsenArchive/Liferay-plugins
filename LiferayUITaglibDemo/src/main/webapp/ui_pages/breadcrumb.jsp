@@ -26,7 +26,7 @@
 <table width="100%" border="0">
 	<col width="50%">
 	<col width="50%">
-  <tr>
+  <tr class="results-header">
     <th>Tag</th>
     <th>Preview</th>
   </tr>
@@ -35,7 +35,7 @@
   <!-- 
   	liferay-ui:breadcrumb
    -->
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;liferay-ui:breadcrumb displayStyle="1"/&gt;
@@ -45,7 +45,7 @@
 		<liferay-ui:breadcrumb displayStyle="1"/>
 	</td>
   </tr>
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;liferay-ui:breadcrumb displayStyle="2"/&gt;

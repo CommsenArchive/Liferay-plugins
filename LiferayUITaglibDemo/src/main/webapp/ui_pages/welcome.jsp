@@ -40,13 +40,13 @@ This portlet demonstrates how to use some of the tags from liferay-ui tag librar
 <table width="100%" border="0">
 	<col width="50%">
 	<col width="50%">
-  <tr>
+  <tr class="results-header">
     <th>Tag</th>
     <th>Preview</th>
   </tr>
 
 
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;liferay-ui:user-display  
@@ -72,7 +72,7 @@ This portlet demonstrates how to use some of the tags from liferay-ui tag librar
 		/>
   </tr>
   
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;liferay-ui:language displayStyle="0" /&gt;
@@ -95,7 +95,7 @@ This portlet demonstrates how to use some of the tags from liferay-ui tag librar
 	</td>
   </tr>
 
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;div id="toggle_div" style="background-color: yellow; float: right; width: 200px" &gt;

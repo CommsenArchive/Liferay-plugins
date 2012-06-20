@@ -29,12 +29,12 @@
 <table width="100%" border="0">
 	<col width="50%">
 	<col width="50%">
-  <tr>
+  <tr class="results-header">
     <th>Tag</th>
     <th>Preview</th>
   </tr>
 
-  <tr>
+  <tr class="results-row">
   	<td>
     	<code><pre>
 &lsaquo;%

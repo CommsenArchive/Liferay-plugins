@@ -48,13 +48,13 @@
 <table width="100%" border="0">
 	<col width="50%">
 	<col width="50%">
-  <tr>
+  <tr class="results-header">
     <th>Tag</th>
     <th>Preview</th>
   </tr>
 
 
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;liferay-ui:input-checkbox formName="boo" param="cb" /&gt; checkbox 
@@ -69,7 +69,7 @@
   </tr>
 
 
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;liferay-ui:input-date 
@@ -101,7 +101,7 @@
   </tr>
 
 
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;liferay-ui:input-date 
@@ -128,7 +128,7 @@
 
 
 
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;liferay-ui:input-editor /&gt;
@@ -141,7 +141,7 @@
 
 
 
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;liferay-ui:input-permissions  formName="boo" modelName="<%=JournalArticle.class.getName() %>" /&gt;
@@ -182,7 +182,7 @@ right.add(new KeyValuePair("item2key", "item2value"));
   </tr>
 
 
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;liferay-ui:input-permissions  formName="boo" modelName="<%=JournalArticle.class.getName() %>" /&gt;
@@ -194,7 +194,7 @@ right.add(new KeyValuePair("item2key", "item2value"));
   </tr>
 
 
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;liferay-ui:input-resource url="http://google.com" /&gt;
@@ -206,7 +206,7 @@ right.add(new KeyValuePair("item2key", "item2value"));
   </tr>
 
 	
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;liferay-ui:input-scheduler /&gt;
@@ -217,7 +217,7 @@ right.add(new KeyValuePair("item2key", "item2value"));
 	</td>
   </tr>
 
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;liferay-ui:input-select formName="boo" param="s" /&gt;
@@ -230,7 +230,7 @@ right.add(new KeyValuePair("item2key", "item2value"));
 
 
 
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;liferay-ui:input-textarea param="tf" defaultValue="test" /&gt;
@@ -242,7 +242,7 @@ right.add(new KeyValuePair("item2key", "item2value"));
   </tr>
 
 
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;liferay-ui:input-time 
@@ -264,7 +264,7 @@ right.add(new KeyValuePair("item2key", "item2value"));
   </tr>
 
 
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;liferay-ui:input-time-zone name="GMT+1"/&gt;

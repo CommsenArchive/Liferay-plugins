@@ -26,7 +26,7 @@
 <table width="100%" border="0">
 	<col width="50%">
 	<col width="50%">
-  <tr>
+  <tr class="results-header">
     <th>Tag</th>
     <th>Preview</th>
   </tr>
@@ -34,7 +34,7 @@
   <!-- 
   	liferay-ui:captcha
    -->
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;liferay-ui:captcha url="http://upload.wikimedia.org/wikipedia/commons/6/69/Captcha.jpg"/&gt;

@@ -41,7 +41,7 @@
 <table width="100%" border="0">
 	<col width="50%">
 	<col width="50%">
-  <tr>
+  <tr class="results-header">
     <th>Tag</th>
     <th>Preview</th>
   </tr>
@@ -49,7 +49,7 @@
   <!-- 
   	liferay-ui:panel
    -->
-  <tr>
+  <tr class="results-row">
   	<td>
     	<code><pre>
 &lt;liferay-ui:panel-container &gt;
@@ -68,7 +68,7 @@
   	</td>
   </tr>
 
-  <tr>
+  <tr class="results-row">
   	<td>
     	<code><pre>
 &lt;liferay-ui:panel-container &gt;
@@ -86,7 +86,7 @@
   		</liferay-ui:panel-container>
   	</td>
   </tr>
-  <tr>
+  <tr class="results-row">
   	<td>
     	<code><pre>
 &lt;liferay-ui:panel-container &gt;
@@ -104,7 +104,7 @@
   		</liferay-ui:panel-container>
   	</td>
   </tr>
-  <tr>
+  <tr class="results-row">
   	<td>
     	<code><pre>
 &lt;liferay-ui:panel-container &gt;
@@ -128,7 +128,7 @@
   	liferay-ui:panel
    -->
   
-  <tr>
+  <tr class="results-row">
   	<td>
     	<code><pre>
 &lt;liferay-ui:panel-container id="panel-container-1" extended="true" accordion="true" &gt;

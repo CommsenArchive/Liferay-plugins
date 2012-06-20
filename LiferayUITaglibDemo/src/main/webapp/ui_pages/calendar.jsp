@@ -28,7 +28,7 @@
 <table width="100%" border="0">
 	<col width="50%">
 	<col width="50%">
-  <tr>
+  <tr class="results-header">
     <th>Tag</th>
     <th>Preview</th>
   </tr>
@@ -36,7 +36,7 @@
   <!-- 
   	liferay-ui:calendar
    -->
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lt;liferay-ui:calendar day="16" year="2009" month="11" /&gt;
@@ -46,7 +46,7 @@
 		<liferay-ui:calendar day="16" year="2009" month="11" />
 	</td>
   </tr>
-  <tr>
+  <tr class="results-row">
     <td>
     	<code><pre>
 &lsaquo;%
